@@ -21,7 +21,7 @@ const Footer = () => {
               <span className="text-xl font-bold text-white">PrimeChoice <span className="text-orange-500">Care</span></span>
             </div>
             <p className="text-gray-300 mb-4">
-              Quality disability support services tailored to individual needs. We're committed to enhancing the lives of our participants through personalized care.
+              Quality disability support services tailored to individual needs. We&apos;re committed to enhancing the lives of our participants through personalized care.
             </p>
             <div className="flex space-x-4">
               <a href="https://facebook.com" className="text-gray-300 hover:text-white transition-colors">

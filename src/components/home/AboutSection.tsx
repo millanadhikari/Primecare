@@ -21,8 +21,8 @@ const AboutSection = () => {
             <p className="text-lg text-gray-700 mb-6">
               Founded by a team of experienced disability support professionals,
               we understand the unique challenges faced by individuals and
-              families navigating disability services. That's why we focus on
-              building meaningful relationships and delivering care that's as
+              families navigating disability services. That&apos;s why we focus on
+              building meaningful relationships and delivering care that&apos;s as
               individual as the people we support.
             </p>
             <div className="flex flex-wrap gap-4 mt-8">

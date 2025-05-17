@@ -15,7 +15,7 @@ const HeroSection = () => {
           </h1>
           <p className="text-lg md:text-xl text-gray-700 mb-8">
             Quality disability support services tailored to individual needs.
-            We're committed to enhancing lives through personalized care and
+            We&apos;re committed to enhancing lives through personalized care and
             dedicated support.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
