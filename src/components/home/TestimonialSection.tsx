@@ -7,7 +7,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 const testimonials = [
   {
     quote:
-      "PrimeCare has been a lifeline for our family. Their caregivers are compassionate, reliable, and truly care about my son's wellbeing. The individualized support has helped him gain confidence and independence.",
+      "PrimeCare has been a lifeline for our family. Their caregivers are compassionate, reliable, and truly care about my son&apos;s wellbeing. The individualized support has helped him gain confidence and independence.",
     author: "Sarah M.",
     role: "Mother of NDIS Participant",
     image:
@@ -15,7 +15,7 @@ const testimonials = [
   },
   {
     quote:
-      "The team at PrimeCare goes above and beyond to ensure I can participate fully in my community. They don't just provide support – they've helped me build skills and confidence to live more independently.",
+      "The team at PrimeCare goes above and beyond to ensure I can participate fully in my community. They don&apos;t just provide support – they&apos;ve helped me build skills and confidence to live more independently.",
     author: "James T.",
     role: "NDIS Participant",
     image:
@@ -23,7 +23,7 @@ const testimonials = [
   },
   {
     quote:
-      "As a support coordinator, I've referred many clients to PrimeCare. Their consistency, professionalism, and genuine commitment to person-centered care sets them apart. I know my clients are in good hands.",
+      "As a support coordinator, I&apos;ve referred many clients to PrimeCare. Their consistency, professionalism, and genuine commitment to person-centered care sets them apart. I know my clients are in good hands.",
     author: "Michelle K.",
     role: "NDIS Support Coordinator",
     image:

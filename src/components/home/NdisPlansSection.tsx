@@ -118,7 +118,7 @@ const NdisPlansSection = () => {
         <div className="mt-12 text-center">
           <p className="text-gray-700 max-w-xl mx-auto">
             Our experienced team works closely with you to maximize your NDIS
-            funding and ensure you receive all the supports you're entitled to.
+            funding and ensure you receive all the supports you&apos;re entitled to.
           </p>
         </div>
       </div>
