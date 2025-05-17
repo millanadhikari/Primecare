@@ -75,7 +75,7 @@ const TestimonialsSection = () => {
                     <path d="M10 8v10H0V8h10zm12 0v10H12V8h10z"></path>
                   </svg>
                   <p className="text-lg md:text-xl text-gray-700 mb-6 italic">
-                    "{testimonials[current].quote}"
+                  &quot;{testimonials[current].quote}&quot;
                   </p>
                   <div>
                     <p className="font-semibold text-lg">
