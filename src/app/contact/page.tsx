@@ -24,7 +24,7 @@ const Contact = () => {
             <div className="max-w-3xl mx-auto text-center">
               <h1 className="text-4xl md:text-5xl font-bold mb-6">Contact Us</h1>
               <p className="text-xl text-gray-700">
-              Complete the form to send your message. If your inquiry is urgent, don't hesitate to call us at the number below.
+              Complete the form to send your message. If your inquiry is urgent, don&asos;t hesitate to call us at the number below.
               </p>
             </div>
           </div>
@@ -84,7 +84,7 @@ const Contact = () => {
               <div>
                 <h2 className="text-3xl font-bold mb-6">Send Us a Message</h2>
                 <p className="text-gray-700 mb-6">
-                  Fill out the form below and we'll get back to you as soon as possible.
+                  Fill out the form below and we&asos;ll get back to you as soon as possible.
                 </p>
                 
                 <form onSubmit={handleSubmit} className="space-y-6">
@@ -137,7 +137,7 @@ const Contact = () => {
                 <h3 className="text-2xl font-semibold mb-4">Need Immediate Assistance?</h3>
                 <p className="text-gray-700 mb-6">
                   If you need immediate support or have urgent questions about our services, 
-                  please don't hesitate to call us directly.
+                  please don&asos;t hesitate to call us directly.
                 </p>
                 
                 <Button asChild className="w-full bg-blue-400 hover:bg-blue-400/90">

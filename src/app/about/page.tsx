@@ -38,7 +38,7 @@ const About = () => {
                   with disabilities to live fulfilling lives on their own terms.
                 </p>
                 <p className="text-gray-700 text-lg">
-                  Over the years, we've grown from a small team supporting a handful of participants to a 
+                  Over the years, we&asos;ve grown from a small team supporting a handful of participants to a 
                   trusted provider across multiple locations, but our commitment to personalized care and 
                   genuine relationships remains at the heart of everything we do.
                 </p>
@@ -108,7 +108,7 @@ const About = () => {
                   <h3 className="text-xl font-semibold">Person-Centered Planning</h3>
                 </div>
                 <p className="text-gray-700">
-                  We take the time to understand each person's unique needs, preferences, and goals, 
+                  We take the time to understand each person&asos;s unique needs, preferences, and goals, 
                   ensuring our support is tailored specifically to them.
                 </p>
               </div>
@@ -134,7 +134,7 @@ const About = () => {
                   <h3 className="text-xl font-semibold">Continuous Improvement</h3>
                 </div>
                 <p className="text-gray-700">
-                  We regularly seek feedback and evaluate our services to ensure we're 
+                  We regularly seek feedback and evaluate our services to ensure we&asos;re 
                   consistently meeting and exceeding expectations.
                 </p>
               </div>
@@ -186,7 +186,7 @@ const About = () => {
           <div className="container-custom text-center">
             <h2 className="text-3xl font-bold mb-4">Join Our Team</h2>
             <p className="text-xl text-blue-100 mb-8 max-w-2xl mx-auto">
-              We're always looking for passionate individuals to join our team and make a difference in the lives of others.
+              We&asos;re always looking for passionate individuals to join our team and make a difference in the lives of others.
             </p>
             <Button asChild className="bg-white text-blue-600 hover:bg-blue-50">
               <Link href="/contact">View Career Opportunities</Link>

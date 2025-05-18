@@ -101,7 +101,7 @@ const NDIS = () => {
                   <h3 className="text-xl font-semibold">Plan Understanding</h3>
                 </div>
                 <p className="text-gray-700">
-                  We'll help you understand your NDIS plan, the funding categories, and how to best utilize your budget.
+                  We&asos;ll help you understand your NDIS plan, the funding categories, and how to best utilize your budget.
                 </p>
               </div>
               
@@ -113,7 +113,7 @@ const NDIS = () => {
                   <h3 className="text-xl font-semibold">Service Matching</h3>
                 </div>
                 <p className="text-gray-700">
-                  We'll match our services to the appropriate funding categories in your plan, ensuring you receive the right supports.
+                  We&asos;ll match our services to the appropriate funding categories in your plan, ensuring you receive the right supports.
                 </p>
               </div>
               

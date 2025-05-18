@@ -2,7 +2,7 @@ import React from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/home/Footer";
 import { Button } from "@/components/ui/button";
-import { Heart, Users, Home, Award, Clock, Brain } from "lucide-react";
+import { Heart, Users, Home, } from "lucide-react";
 import WhyChooseSection from "@/components/home/WhyChooseSection";
 import Link from "next/link";
 
