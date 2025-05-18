@@ -23,7 +23,7 @@ const HeroSection = () => {
               asChild
               className="bg-blue-500 hover:bg-blue/90 text-white px-8 py-6 rounded-md"
             >
-              <Link href="/contact">Contact Us</Link>
+              <Link href="/contact" >Contact Us</Link>
             </Button>
             <Button
               asChild

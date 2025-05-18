@@ -85,7 +85,7 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="md:hidden bg-white border-t">
+        <div className="md:hidden bg-white border-t border-gray-300">
           <div className="container-custom py-4 space-y-3">
             <Link
               href="/"
@@ -123,7 +123,7 @@ const Navbar = () => {
               Contact
             </Link>
             <div className="pt-2">
-              <Button className="w-full bg-blue-600 hover:bg-blue-500">
+              <Button className="w-full bg-blue-600 hover:bg-blue-500 ">
                 <Phone size={16} className="mr-2" />
                 0435764571
               </Button>
