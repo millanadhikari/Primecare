@@ -99,7 +99,7 @@ export default function StaffDirectoryPage() {
     const staffMember = {
       id: (staff.length + 1).toString(),
       ...newStaff,
-      joinedDate: new Date().toLocaleDateString("en-US", { month: "short", day: "2", year: "numeric" }),
+      joinedDate: new Date().toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" }),
       lastLogin: "Never",
       onboardingStatus: "Pending",
     };
