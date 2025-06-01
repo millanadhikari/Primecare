@@ -143,7 +143,7 @@ export default function StaffDirectoryPage() {
             <DialogHeader>
               <DialogTitle>Add New Staff Member</DialogTitle>
               <DialogDescription>
-                Enter the staff member's information below.
+                Enter the staff member&aspos;s information below.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
@@ -160,7 +160,7 @@ export default function StaffDirectoryPage() {
                   <Label htmlFor="gender">Gender</Label>
                   <Select
                     value={newStaff.gender}
-                    onValueChange={(value:any) => setNewStaff({ ...newStaff, gender: value })}
+                    onValueChange={(value:string) => setNewStaff({ ...newStaff, gender: value })}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Select gender" />

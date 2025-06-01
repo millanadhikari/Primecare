@@ -26,6 +26,7 @@ export default function ResetPasswordPage() {
       toast.success("Reset instructions sent to your email");
     } catch (error) {
       toast.error("Failed to send reset instructions");
+      console.log(error);
     } finally {
       setIsLoading(false);
     }
@@ -76,7 +77,7 @@ export default function ResetPasswordPage() {
         ) : (
           <CardContent className="text-center">
             <p className="mb-4 text-muted-foreground">
-              We've sent password reset instructions to your email. Please check
+              We&aspos;ve sent password reset instructions to your email. Please check
               your inbox and follow the instructions to reset your password.
             </p>
             <Link

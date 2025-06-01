@@ -162,7 +162,7 @@ export default function ClientsPage() {
             <DialogHeader>
               <DialogTitle>Add New Client</DialogTitle>
               <DialogDescription>
-                Enter the client's information below.
+                Enter the client&aspos;s information below.
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4 ">

@@ -33,8 +33,9 @@ export default function LoginPage() {
       await new Promise((resolve) => setTimeout(resolve, 1000));
       toast.success("Login successful");
       router.push("/");
-    } catch (error) {
+    } catch (e) {
       toast.error("Invalid credentials");
+      console.log(e)
     } finally {
       setIsLoading(false);
     }

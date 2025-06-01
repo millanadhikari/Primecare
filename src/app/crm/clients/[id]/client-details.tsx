@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { CalendarIcon, Upload, File, Trash2, Camera } from "lucide-react";
+import { CalendarIcon, Upload, File, Trash2 } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { format } from "date-fns";
@@ -50,8 +50,8 @@ export function ClientDetails({ client }: ClientDetailsProps) {
   const [date, setDate] = useState<Date>();
   const [documents, setDocuments] = useState<Document[]>([]);
 
-  let fullName = client.name;
-  let nameParts = fullName.trim().split(" ");
+  const fullName = client.name;
+  const nameParts = fullName.trim().split(" ");
   let initials = "";
 
   if (nameParts.length >= 2) {
