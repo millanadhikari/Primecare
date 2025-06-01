@@ -1,13 +1,13 @@
 import { MainLayout } from "@/components/layout/main-layout";
 import { ClientDetails } from "./client-details";
 
+// Define the type for the params
+type Params = Promise<{ id: string }>;
 
+// Define the component props
 type PageProps = {
-    params: {
-      id: string;
-    };
-  };
-
+  params: Params;
+};
 // This function tells Next.js which routes to pre-render during build
 export async function generateStaticParams() {
   // In a real application, these IDs would likely come from a database or API
@@ -21,10 +21,11 @@ export async function generateStaticParams() {
   ];
 }
 
-export default function ClientDetailsPage({ params }:PageProps) {
+export default async function ClientDetailsPage({ params }:PageProps) {
   // This would normally come from an API/database
+  const { id } = await params;
   const client = {
-    id: params.id,
+    id: id,
     name: "James Wilson",
     age: 45,
     email: "james.wilson@example.com",
