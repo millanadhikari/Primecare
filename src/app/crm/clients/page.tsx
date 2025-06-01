@@ -127,7 +127,7 @@ export default function ClientsPage() {
       age: parseInt(newClient.age),
       disability: newClient.disability,
       status: "New",
-      lastVisit: new Date().toLocaleDateString("en-US", { month: "short", day: "2", year: "numeric" }),
+      lastVisit: new Date().toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" }),
       careManager: newClient.careManager,
     };
 
