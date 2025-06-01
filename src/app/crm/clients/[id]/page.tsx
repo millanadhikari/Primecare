@@ -2,7 +2,7 @@ import { MainLayout } from "@/components/layout/main-layout";
 import { ClientDetails } from "./client-details";
 
 
-type Props = {
+type PageProps = {
     params: {
       id: string;
     };
@@ -21,7 +21,7 @@ export async function generateStaticParams() {
   ];
 }
 
-export default function ClientDetailsPage({ params }:Props) {
+export default function ClientDetailsPage({ params }:PageProps) {
   // This would normally come from an API/database
   const client = {
     id: params.id,
