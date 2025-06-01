@@ -21,9 +21,9 @@ const AboutSection = () => {
             <p className="text-lg text-gray-700 mb-6">
               Founded by a team of experienced disability support professionals,
               we understand the unique challenges faced by individuals and
-              families navigating disability services. That&apos;s why we focus on
-              building meaningful relationships and delivering care that&apos;s as
-              individual as the people we support.
+              families navigating disability services. That&apos;s why we focus
+              on building meaningful relationships and delivering care
+              that&apos;s as individual as the people we support.
             </p>
             <div className="flex flex-wrap gap-4 mt-8">
               <Button asChild className="bg-blue-600 hover:bg-blue-500">
@@ -47,7 +47,7 @@ const AboutSection = () => {
                   className="w-full h-full object-cover"
                 />
               </div>
-              <div className="absolute -bottom-6 -right-6 bg-white p-4 rounded-lg shadow-lg max-w-xs">
+              <div className="absolute -bottom-6 md:-right-6 bg-white p-4 rounded-lg shadow-lg max-w-xs">
                 <p className="font-bold text-blue-600 text-xl">10+ Years</p>
                 <p className="text-gray-700">
                   Of experience in disability support services

@@ -14,11 +14,11 @@ export default function Home() {
       <main className="flex-grow">
         <HeroSection />
         <ServicesSection />
-        <AboutSection/>
-        <NdisPlansSection/>
-        <Why/>
-        <TestimonialsSection/>
-        <Footer/>
+        <AboutSection />
+        <NdisPlansSection />
+        <Why />
+        <TestimonialsSection />
+        <Footer />
       </main>
     </div>
   );

@@ -84,7 +84,7 @@ const Contact = () => {
               <div>
                 <h2 className="text-3xl font-bold mb-6">Send Us a Message</h2>
                 <p className="text-gray-700 mb-6">
-                  Fill out the form below and we&asos;ll get back to you as soon as possible.
+                  Fill out the form below and we&aspos;ll get back to you as soon as possible.
                 </p>
                 
                 <form onSubmit={handleSubmit} className="space-y-6">
