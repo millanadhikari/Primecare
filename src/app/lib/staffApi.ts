@@ -1,8 +1,12 @@
+const production =  'https://primebackend.onrender.com'
+
+const local =  'http://localhost:3000'
+
 export async function createStaff(
   staffData: Record<string, any>,
   token: string
 ) {
-  const res = await fetch(`http://localhost:3000/api/auth/signup`, {
+  const res = await fetch(`${production}/auth/signup`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -43,7 +47,7 @@ export async function getStaffs(
   params.append("limit", limit.toString());
 
   const res = await fetch(
-    `http://localhost:3000/api/auth/users?${params.toString()}`,
+    `${production}/api/auth/users?${params.toString()}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -58,7 +62,7 @@ export async function getStaffs(
 }
 
 export async function getStaffById(id: string, token: string) {
-  const res = await fetch(`http://localhost:3000/api/auth/users/${id}`, {
+  const res = await fetch(`${production}/api/auth/users/${id}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -82,7 +86,7 @@ export async function updateStaffById(
   token: string
 ) {
   console.log("Updating staff with ID:", id, "Data:", updatedData);
-  const res = await fetch(`http://localhost:3000/api/auth/users/${id}`, {
+  const res = await fetch(`${production}/api/auth/users/${id}`, {
     method: "PUT",
     headers: {
       Authorization: `Bearer ${token}`,
