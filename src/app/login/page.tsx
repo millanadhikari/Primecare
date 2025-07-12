@@ -25,13 +25,18 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
 
     try {
-      const res = await axios.post("/auth/login", { email, password }, {withCredentials:true});
+      const res = await axios.post(
+        "/auth/login",
+        { email, password },
+        { withCredentials: true }
+      );
       console.log("Login response:", res.data);
       const { user, accessToken } = res.data.data;
 
@@ -41,7 +46,8 @@ export default function LoginPage() {
       // router.push("/crm"); // go to dashboard
     } catch (error: any) {
       const message = error?.response?.data?.message || "Invalid credentials";
-      alert(message);
+      setErrorMsg(message);
+      // alert(message);
       // toast.error(message);
       console.error(error);
     } finally {
@@ -60,6 +66,9 @@ export default function LoginPage() {
           <CardDescription>
             Enter your credentials to access your account
           </CardDescription>
+          <div className="text-left text-xs text-red-500">
+            {errorMsg && <p>* {errorMsg}</p>}
+          </div>
         </CardHeader>
         <form onSubmit={handleLogin}>
           <CardContent className="space-y-4">

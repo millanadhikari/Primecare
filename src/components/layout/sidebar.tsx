@@ -265,8 +265,8 @@ export function Sidebar({ isCollapsed, onCollapse }: SidebarProps) {
         </div>
         <div
           className="border-t border-gray-200 p-4 cursor-pointer hover:bg-gray-100"
-          // onClick={() => router.push("/crm/profile")}
-          onClick={handleLogout}
+          onClick={() => router.push("/crm/profile")}
+          // onClick={handleLogout}
         >
           <div
             className={cn(
