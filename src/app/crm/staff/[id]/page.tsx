@@ -3,14 +3,16 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 
 import { MainLayout } from "@/components/layout/main-layout";
-import { ClientDetails } from "./client-details";
+import { StaffDetails } from "./staff-details";
 import { getClientById } from "@/app/lib/clientApi";
+import { getStaffById } from "@/app/lib/staffApi";
 
 export default function ClientDetailsPage() {
   const { id } = useParams();
-  const [client, setClient] = useState(null);
+  const [staff, setStaff] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
   useEffect(() => {
     const token = localStorage.getItem("accessToken");
 
@@ -20,24 +22,24 @@ export default function ClientDetailsPage() {
       return;
     }
 
-    getClientById(id as string, token)
+    getStaffById(id as string, token)
       .then((data) => {
-        console.log("Fetched client data:", data);
-        setClient(data);
+        console.log("Fetched staff data:", data?.data);
+        setStaff(data);
       })
       .catch((err) => {
-        console.error("Failed to fetch client:", err);
-        setError("Failed to fetch client.");
+        console.error("Failed to fetch staff:", err);
+        setError("Failed to fetch staff.");
       })
       .finally(() => setLoading(false));
   }, [id]);
 
-  if (loading) return <p>Loading client...</p>;
+  if (loading) return <p>Loading staff...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
-  if (!client) return <p>Client not found.</p>;
+  if (!staff) return <p>Client not found.</p>;
   return (
     <MainLayout>
-      <ClientDetails client={client} />
+      <StaffDetails staffMember={staff} />
     </MainLayout>
   );
 }

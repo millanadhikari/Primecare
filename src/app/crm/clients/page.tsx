@@ -3,12 +3,27 @@
 import { MainLayout } from "@/components/layout/main-layout";
 import { PageHeader } from "@/components/layout/page-header";
 import { Button } from "@/components/ui/button";
-import { UserPlus, Filter, Trash2, MoreVertical, ExternalLink } from "lucide-react";
+import {
+  UserPlus,
+  Filter,
+  Trash2,
+  MoreVertical,
+  ExternalLink,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
 import {
   Dialog,
   DialogContent,
@@ -24,9 +39,17 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import { deleteClient, getClients } from "@/app/lib/clientApi";
 
 // Sample clients data
 const initialClients = [
@@ -60,7 +83,7 @@ const initialClients = [
   {
     id: "4",
     name: "Emma Rodriguez",
-    age: 28,
+    age: 16,
     disability: "Developmental Disability",
     status: "New",
     lastVisit: "Apr 8, 2025",
@@ -102,12 +125,79 @@ const initialClients = [
     lastVisit: "Mar 28, 2025",
     careManager: "Dr. Mark Johnson",
   },
+  {
+    id: "9",
+    name: "Tommy Anderson",
+    age: 12,
+    disability: "Autism Spectrum Disorder",
+    status: "Active",
+    lastVisit: "Apr 3, 2025",
+    careManager: "Dr. Rebecca Chen",
+  },
+  {
+    id: "10",
+    name: "Jessica Brown",
+    age: 28,
+    disability: "Spinal Cord Injury",
+    status: "Inactive",
+    lastVisit: "Jan 15, 2025",
+    careManager: "Dr. Mark Johnson",
+  },
+  {
+    id: "11",
+    name: "Alex Turner",
+    age: 15,
+    disability: "ADHD",
+    status: "Active",
+    lastVisit: "Apr 6, 2025",
+    careManager: "Dr. Jennifer Lee",
+  },
+  {
+    id: "12",
+    name: "Maria Santos",
+    age: 48,
+    disability: "Fibromyalgia",
+    status: "New",
+    lastVisit: "Apr 9, 2025",
+    careManager: "Dr. Rebecca Chen",
+  },
+  {
+    id: "13",
+    name: "Kevin Lee",
+    age: 35,
+    disability: "Depression",
+    status: "Active",
+    lastVisit: "Apr 4, 2025",
+    careManager: "Dr. Mark Johnson",
+  },
+  {
+    id: "14",
+    name: "Sophie Miller",
+    age: 14,
+    disability: "Learning Disability",
+    status: "Active",
+    lastVisit: "Apr 7, 2025",
+    careManager: "Dr. Jennifer Lee",
+  },
+  {
+    id: "15",
+    name: "Daniel White",
+    age: 52,
+    disability: "Bipolar Disorder",
+    status: "Inactive",
+    lastVisit: "Dec 20, 2024",
+    careManager: "Dr. Rebecca Chen",
+  },
 ];
 
 export default function ClientsPage() {
   const router = useRouter();
-  const [clients, setClients] = useState(initialClients);
+  const [clients, setClients] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [ageFilter, setAgeFilter] = useState("All");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [recordsPerPage, setRecordsPerPage] = useState(10);
   const [newClient, setNewClient] = useState({
     name: "",
     age: "",
@@ -115,8 +205,40 @@ export default function ClientsPage() {
     careManager: "",
   });
 
+  const fetchClients = async () => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) return;
+
+    // setLoading(true);
+    try {
+      const data = await getClients(token, {
+        searchQuery,
+        age: ageFilter,
+        status: statusFilter,
+        page: currentPage,
+        limit: recordsPerPage,
+      });
+      console.log("Fetched clients:", data.data);
+
+      setClients(data?.data?.clients);
+      setCurrentPage(data?.data?.pagination?.page || 1);
+    } catch (err) {
+      console.error("Error fetching clients:", err);
+    } finally {
+      // setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchClients();
+  }, [searchQuery, ageFilter, statusFilter, currentPage, recordsPerPage]);
+
   const handleAddClient = () => {
-    if (!newClient.name || !newClient.age || !newClient.disability || !newClient.careManager) {
+    if (
+      !newClient.name ||
+      !newClient.age ||
+      !newClient.disability ||
+      !newClient.careManager
+    ) {
       toast.error("Please fill in all required fields");
       return;
     }
@@ -127,7 +249,11 @@ export default function ClientsPage() {
       age: parseInt(newClient.age),
       disability: newClient.disability,
       status: "New",
-      lastVisit: new Date().toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" }),
+      lastVisit: new Date().toLocaleDateString("en-US", {
+        month: "short",
+        
+        year: "numeric",
+      }),
       careManager: newClient.careManager,
     };
 
@@ -135,15 +261,90 @@ export default function ClientsPage() {
     setNewClient({ name: "", age: "", disability: "", careManager: "" });
     toast.success("Client added successfully");
   };
+  const handleDeleteClient = async (id: string) => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      toast.error("Missing access token");
+      return;
+    }
 
-  const handleDeleteClient = (id: string) => {
-    setClients(clients.filter((client) => client.id !== id));
-    toast.success("Client deleted successfully");
+    try {
+      await deleteClient(token, id);
+      setClients((prev) => prev.filter((client) => client.id !== id));
+      toast.success("Client deleted successfully");
+    } catch (err: any) {
+      console.error("Error deleting client:", err);
+      toast.error(err.message || "Failed to delete client");
+    }
   };
 
-  const filteredClients = clients.filter((client) =>
-    client.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Filter and search logic
+  const filteredClients = useMemo(() => {
+    return clients?.filter((client) => {
+      const matchesSearch = client?.firstName
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase());
+
+      const matchesAge =
+        ageFilter === "All" ||
+        (ageFilter === "Adults" && client.age >= 18) ||
+        (ageFilter === "Children" && client.age < 18);
+
+      const matchesStatus =
+        statusFilter === "All" ||
+        (statusFilter === "Active" &&
+          (client.status === "Active" || client.status === "New")) ||
+        (statusFilter === "Inactive" && client.status === "Inactive");
+
+      return matchesSearch && matchesAge && matchesStatus;
+    });
+  }, [clients, searchQuery, ageFilter, statusFilter]);
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredClients?.length / recordsPerPage);
+  const startIndex = (currentPage - 1) * recordsPerPage;
+  const endIndex = startIndex + recordsPerPage;
+  const currentClients = filteredClients?.slice(startIndex, endIndex);
+
+  // Reset to first page when filters change
+  const handleFilterChange = (filterType: string, value: string) => {
+    setCurrentPage(1);
+    if (filterType === "age") {
+      setAgeFilter(value);
+    } else if (filterType === "status") {
+      setStatusFilter(value);
+    }
+  };
+
+  const handleRecordsPerPageChange = (value: string) => {
+    setRecordsPerPage(parseInt(value));
+    setCurrentPage(1);
+  };
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+  const handleAddNewClient = () => {
+    router.push("/crm/clients/new");
+  };
+
+   function calculateAge(dob: string | Date): number {
+    const birthDate = new Date(dob);
+    const today = new Date();
+
+    let age = today.getFullYear() - birthDate.getFullYear();
+
+    const hasHadBirthdayThisYear =
+      today.getMonth() > birthDate.getMonth() ||
+      (today.getMonth() === birthDate.getMonth() &&
+        today.getDate() >= birthDate.getDate());
+
+    if (!hasHadBirthdayThisYear) {
+      age--;
+    }
+
+    return age;
+  }
 
   return (
     <MainLayout>
@@ -151,147 +352,220 @@ export default function ClientsPage() {
         title="Clients"
         description="View and manage all client records."
       >
-        <Dialog>
-          <DialogTrigger asChild>
-            <Button>
-              <UserPlus className="mr-2 h-4 w-4" />
-              Add New Client
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Add New Client</DialogTitle>
-              <DialogDescription>
-                Enter the client&aspos;s information below.
-              </DialogDescription>
-            </DialogHeader>
-            <div className="grid gap-4 py-4 ">
-              <div className="grid gap-2">
-                <Label htmlFor="name">Full Name</Label>
-                <Input
-                  id="name"
-                  value={newClient.name}
-                  onChange={(e) => setNewClient({ ...newClient, name: e.target.value })}
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="age">Age</Label>
-                <Input
-                  id="age"
-                  type="number"
-                  value={newClient.age}
-                  onChange={(e) => setNewClient({ ...newClient, age: e.target.value })}
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="disability">Disability</Label>
-                <Input
-                  id="disability"
-                  value={newClient.disability}
-                  onChange={(e) => setNewClient({ ...newClient, disability: e.target.value })}
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="careManager">Care Manager</Label>
-                <Input
-                  id="careManager"
-                  value={newClient.careManager}
-                  onChange={(e) => setNewClient({ ...newClient, careManager: e.target.value })}
-                />
-              </div>
-            </div>
-            <DialogFooter>
-              <Button onClick={handleAddClient}>Add Client</Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+        <Button onClick={handleAddNewClient}>
+          <UserPlus className="mr-2 h-4 w-4" />
+          Add New Client
+        </Button>
       </PageHeader>
 
       <Card>
-        <CardContent className="p-6 border-red-300">
-          <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
-            <div className="flex w-full items-center space-x-2 sm:w-auto">
-              <Input
-                placeholder="Search clients..."
-                className="w-full sm:w-[300px]"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+        <CardContent className="p-6">
+          <div className="flex flex-col space-y-4">
+            {/* Search and Filters */}
+            <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+              <div className="flex w-full items-center space-x-2 sm:w-auto">
+                <Input
+                  placeholder="Search clients..."
+                  className="w-full sm:w-[300px]"
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setCurrentPage(1);
+                  }}
+                />
+              </div>
+              <div className="flex items-center space-x-2">
+                <Select
+                  value={ageFilter}
+                  onValueChange={(value) => handleFilterChange("age", value)}
+                >
+                  <SelectTrigger className="w-[120px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="All">All Ages</SelectItem>
+                    <SelectItem value="Adults">Adults</SelectItem>
+                    <SelectItem value="Children">Children</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select
+                  value={statusFilter}
+                  onValueChange={(value) => handleFilterChange("status", value)}
+                >
+                  <SelectTrigger className="w-[120px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="All">All Status</SelectItem>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="inactive">Inactive</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button variant="outline" size="sm">
+                  <Filter className="mr-2 h-4 w-4" />
+                  Filter
+                </Button>
+              </div>
             </div>
-            <div className="flex items-center space-x-2">
-              <Button variant="outline" size="sm">
-                <Filter className="mr-2 h-4 w-4" />
-                Filter
-              </Button>
-            </div>
-          </div>
 
-          <div className="mt-6 overflow-hidden rounded-md border border-gray-300">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Age</TableHead>
-                  <TableHead className="hidden md:table-cell">Disability</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="hidden md:table-cell">Last Visit</TableHead>
-                  <TableHead className="hidden lg:table-cell">Care Manager</TableHead>
-                  <TableHead className="w-[100px]"></TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody  >
-                {filteredClients.map((client) => (
-                  <TableRow   key={client.id}>
-                    <TableCell className="text-md pl-4 ">{client.name}</TableCell>
-                    <TableCell>{client.age}</TableCell>
-                    <TableCell className="hidden md:table-cell">
-                      {client.disability}
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={
-                          client.status === "Active"
-                            ? "default"
-                            : client.status === "New"
-                            ? "secondary"
-                            : "outline"
-                        }
-                      >
-                        {client.status}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell">
-                      {client.lastVisit}
-                    </TableCell>
-                    <TableCell className="hidden lg:table-cell">
-                      {client.careManager}
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem onClick={() => router.push(`/crm/clients/${client.id}`)}>
-                            <ExternalLink className="mr-2 h-4 w-4" />
-                            View Details
-                          </DropdownMenuItem>
-                          <DropdownMenuItem
-                            className="text-destructive"
-                            onClick={() => handleDeleteClient(client.id)}
-                          >
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
+            {/* Table */}
+            <div className="overflow-hidden rounded-md border">
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Name</TableHead>
+                    <TableHead>Age</TableHead>
+                    <TableHead className="hidden md:table-cell">
+                      Phone
+                    </TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead className="hidden md:table-cell">
+                      Email
+                    </TableHead>
+                    <TableHead className="hidden lg:table-cell">
+                      Care Manager
+                    </TableHead>
+                    <TableHead className="w-[100px]"></TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHeader>
+                <TableBody>
+                  {currentClients?.map((client) => (
+                    <TableRow key={client.id}>
+                      <TableCell className="font-medium">
+                        {client.firstName} {client.lastName}
+                      </TableCell>
+                      <TableCell>{calculateAge(client.dob)}</TableCell>
+                      <TableCell className="hidden md:table-cell">
+                        {client.phone}
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={
+                            client.status === "active"
+                              ? "default"
+                              : client.status === "New"
+                              ? "secondary"
+                              : "outline"
+                          }
+                        >
+                          {client.status === 'active' && "Active"}
+                          {client.status === 'inactive' && "Inactive"}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="hidden md:table-cell">
+                        {client.email}
+                      </TableCell>
+                      <TableCell className="hidden lg:table-cell">
+                        {client.careManager}
+                      </TableCell>
+                      <TableCell>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon">
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem
+                              onClick={() =>
+                                router.push(`/crm/clients/${client.id}`)
+                              }
+                            >
+                              <ExternalLink className="mr-2 h-4 w-4" />
+                              View Details
+                            </DropdownMenuItem>
+                            <DropdownMenuItem
+                              className="text-destructive"
+                              onClick={() => handleDeleteClient(client.id)}
+                            >
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </div>
+
+            {/* Pagination */}
+            <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+              <div className="flex items-center space-x-2 text-sm text-muted-foreground">
+                <span>
+                  Showing {startIndex + 1} to{" "}
+                  {Math.min(endIndex, filteredClients?.length)} of{" "}
+                  {filteredClients?.length} items
+                </span>
+                <Select
+                  value={recordsPerPage?.toString()}
+                  onValueChange={handleRecordsPerPageChange}
+                >
+                  <SelectTrigger className="w-[80px] h-8">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="10">10</SelectItem>
+                    <SelectItem value="25">25</SelectItem>
+                    <SelectItem value="40">40</SelectItem>
+                    <SelectItem value="50">50</SelectItem>
+                  </SelectContent>
+                </Select>
+                <span>records per page</span>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                >
+                  <ChevronLeft className="h-4 w-4" />
+                  Previous
+                </Button>
+
+                <div className="flex items-center space-x-1">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1)
+                    .filter((page) => {
+                      // Show first page, last page, current page, and pages around current page
+                      return (
+                        page === 1 ||
+                        page === totalPages ||
+                        (page >= currentPage - 1 && page <= currentPage + 1)
+                      );
+                    })
+                    .map((page, index, array) => (
+                      <div key={page} className="flex items-center">
+                        {index > 0 && array[index - 1] !== page - 1 && (
+                          <span className="px-2 text-muted-foreground">
+                            ...
+                          </span>
+                        )}
+                        <Button
+                          variant={currentPage === page ? "default" : "outline"}
+                          size="sm"
+                          className="w-8 h-8 p-0"
+                          onClick={() => handlePageChange(page)}
+                        >
+                          {page}
+                        </Button>
+                      </div>
+                    ))}
+                </div>
+
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                >
+                  Next
+                  <ChevronRight className="h-4 w-4" />
+                </Button>
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>

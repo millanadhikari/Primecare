@@ -16,9 +16,12 @@ import { AccessibilityIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import axios from "../lib/axios";
+import { useAuth } from "../context/AuthContext"; // Adjust the import path as necessary
 
 export default function LoginPage() {
   const router = useRouter();
+  const { login } = useAuth(); // Assuming AuthContext is set up to provide login function
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -28,14 +31,19 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      // Here you would typically make an API call to authenticate
-      // For demo purposes, we'll simulate a successful login
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const res = await axios.post("/auth/login", { email, password });
+      console.log("Login response:", res.data);
+      const { user, accessToken } = res.data.data;
+
+      login(user, accessToken); // update context
+
       toast.success("Login successful");
-      router.push("/");
-    } catch (e) {
-      toast.error("Invalid credentials");
-      console.log(e)
+      router.push("/crm"); // go to dashboard
+    } catch (error: any) {
+      const message = error?.response?.data?.message || "Invalid credentials";
+      alert(message);
+      // toast.error(message);
+      console.error(error);
     } finally {
       setIsLoading(false);
     }

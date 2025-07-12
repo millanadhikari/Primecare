@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
   AccessibilityIcon,
   Activity,
+  BookOpen,
   Calendar,
   ChevronDown,
   ClipboardList,
@@ -25,6 +26,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { useAuth } from "@/app/context/AuthContext";
 
 interface SidebarLinkProps {
   href: string;
@@ -116,7 +118,14 @@ interface SidebarProps {
 
 export function Sidebar({ isCollapsed, onCollapse }: SidebarProps) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
-
+  const { user } = useAuth();
+  const { logout } = useAuth();
+  const router = useRouter();
+  const handleLogout = () => {
+    // Implement your logout logic here
+    console.log("Logging out...");
+    logout();
+  };
   return (
     <>
       <Button
@@ -220,9 +229,15 @@ export function Sidebar({ isCollapsed, onCollapse }: SidebarProps) {
                 isCollapsed={isCollapsed}
               />
               <SidebarLink
-                href="/documents"
+                href="/crm/documents"
                 icon={<FileText className="h-5 w-5" />}
                 label="Documents"
+                isCollapsed={isCollapsed}
+              />
+              <SidebarLink
+                href="/crm/blogs"
+                icon={<BookOpen className="h-5 w-5" />}
+                label="Blog Management"
                 isCollapsed={isCollapsed}
               />
               <SidebarLink
@@ -248,7 +263,11 @@ export function Sidebar({ isCollapsed, onCollapse }: SidebarProps) {
             </NavGroup>
           </nav>
         </div>
-        <div className="border-t p-4">
+        <div
+          className="border-t border-gray-200 p-4 cursor-pointer hover:bg-gray-100"
+          // onClick={() => router.push("/crm/profile")}
+          onClick={handleLogout}
+        >
           <div
             className={cn(
               "flex items-center gap-3",
@@ -266,7 +285,9 @@ export function Sidebar({ isCollapsed, onCollapse }: SidebarProps) {
                 isCollapsed ? "hidden" : "block"
               )}
             >
-              <div className="text-sm font-medium">Dr. Rebecca Chen</div>
+              <div className="text-sm font-medium">
+                {user?.data?.user.firstName} {user?.data?.user.lastName}
+              </div>
               <div className="text-xs text-muted-foreground">
                 Medical Director
               </div>
