@@ -4,10 +4,11 @@ import axios, {
   AxiosResponse,
 } from "axios";
 
-const production =  'https://primebackend.onrender.com'
+const production = "https://primebackend.onrender.com/api";
 
 const instance: AxiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_BASE_URL || 
+  baseURL: 
+  // process.env.NEXT_PUBLIC_API_BASE_URL || 
   production,
   // "http://localhost:3000/api",
   withCredentials: true, // send cookies like refreshToken
