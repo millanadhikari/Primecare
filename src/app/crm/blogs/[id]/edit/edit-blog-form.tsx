@@ -336,9 +336,7 @@ export function EditBlogForm({ blog }: EditBlogFormProps) {
   };
   if (!blogData) return null;
 
-  useEffect(() => {
-    console.log("Blog data updated:", blogData);
-  }, [blogData]);
+ 
   return (
     <div className="space-y-6">
       {/* Header */}
