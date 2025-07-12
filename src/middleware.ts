@@ -26,5 +26,7 @@ export function middleware(request: NextRequest) {
 
 // Apply middleware to specific paths
 export const config = {
-  matcher: ['/crm/:path*', '/clients/:path*'],
+  matcher: [
+    // '/crm/:path*', 
+    '/clients/:path*'],
 };
