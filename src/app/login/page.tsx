@@ -38,7 +38,7 @@ export default function LoginPage() {
       await login(user, accessToken); // update context
 
       toast.success("Login successful");
-      router.push("/crm"); // go to dashboard
+      // router.push("/crm"); // go to dashboard
     } catch (error: any) {
       const message = error?.response?.data?.message || "Invalid credentials";
       alert(message);
