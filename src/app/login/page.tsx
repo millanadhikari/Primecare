@@ -31,7 +31,7 @@ export default function LoginPage() {
     setIsLoading(true);
 
     try {
-      const res = await axios.post("/auth/login", { email, password });
+      const res = await axios.post("/auth/login", { email, password }, {withCredentials:true});
       console.log("Login response:", res.data);
       const { user, accessToken } = res.data.data;
 
