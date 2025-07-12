@@ -5,6 +5,7 @@ import axios, {
 } from "axios";
 
 const production = "https://primebackend.onrender.com/api";
+// const production = "http://localhost:3000/api";
 
 const instance: AxiosInstance = axios.create({
   baseURL: 

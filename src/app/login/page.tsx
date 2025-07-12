@@ -35,7 +35,7 @@ export default function LoginPage() {
       console.log("Login response:", res.data);
       const { user, accessToken } = res.data.data;
 
-      login(user, accessToken); // update context
+      await login(user, accessToken); // update context
 
       toast.success("Login successful");
       router.push("/crm"); // go to dashboard

@@ -141,6 +141,8 @@ interface ClientDetailsProps {
   client: ClientData;
 }
 
+const PRODUCTION = "https://primebackend.onrender.com/api";
+const LOCAL = "http://localhost:3000/api";
 export function ClientDetails({ client }: ClientDetailsProps) {
   const [clientData, setClientData] = useState<ClientData>({
     ...client,
@@ -395,7 +397,7 @@ export function ClientDetails({ client }: ClientDetailsProps) {
         formData.append("file", file);
 
         try {
-          const res = await fetch("http://localhost:3000/api/upload", {
+          const res = await fetch(`${PRODUCTION}/upload`, {
             method: "POST",
             body: formData,
           });
@@ -474,7 +476,7 @@ export function ClientDetails({ client }: ClientDetailsProps) {
       setInvoices((prev) => prev.filter((i) => i.id !== doc.id));
     }
     try {
-      const deleteFile = await fetch("http://localhost:3000/api/upload", {
+      const deleteFile = await fetch(`${PRODUCTION}/upload`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ publicId: doc.imagePublicId }),

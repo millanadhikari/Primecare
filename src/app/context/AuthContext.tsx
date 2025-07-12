@@ -38,11 +38,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchUser = async () => {
-    console.log("Fetching user with accessToken:", accessToken);
+  const fetchUser = async (token) => {
+    console.log("Fetching user with accessToken:", token);
+    if (!token) return;
     try {
       const res = await axios.get("auth/me", {
-        headers: { Authorization: `Bearer ${accessToken}` },
+        headers: { Authorization: `Bearer ${token}` },
       });
       setUser(res.data);
       console.log("User fetched successfully:", res.data);
@@ -73,7 +74,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(null);
       setAccessToken(null);
       localStorage.removeItem("accessToken"); // ✅
-      router.push("/crm/login");
+      router.push("/login");
     } catch (err) {
       console.error("Logout failed:", err);
     }
@@ -132,7 +133,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (token) {
         setAccessToken(token);
         setLoading(false);
-        await fetchUser(); // optional if needed at this point
+        await fetchUser(token); // optional if needed at this point
         return;
       }
 
@@ -146,7 +147,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         setAccessToken(newToken);
         localStorage.setItem("accessToken", newToken);
-        await fetchUser();
+        await fetchUser(newToken);
       } catch (err) {
         console.error("Refresh failed:", err);
         setUser(null);

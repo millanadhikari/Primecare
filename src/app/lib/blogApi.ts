@@ -1,5 +1,9 @@
+const production = "https://primebackend.onrender.com";
+
+const local = "http://localhost:3000";
+
 export async function createBlog(blogData: Record<string, any>, token: string) {
-  const res = await fetch(`http://localhost:3000/api/blog/create`, {
+  const res = await fetch(`${production}/api/blog/create`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -41,7 +45,7 @@ export async function getBlogs(
   params.append("page", page.toString());
   params.append("limit", limit.toString());
   const res = await fetch(
-    `http://localhost:3000/api/blog?${params.toString().toLowerCase()}`,
+    `${production}/api/blog?${params.toString().toLowerCase()}`,
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -56,7 +60,7 @@ export async function getBlogs(
 
 //delete blog
 export async function deleteBlog(token: string, id: string) {
-  const res = await fetch(`http://localhost:3000/api/blog/${id}`, {
+  const res = await fetch(`${production}/api/blog/${id}`, {
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -72,7 +76,7 @@ export async function deleteBlog(token: string, id: string) {
 
 // get blog by id
 export async function getBlogById(id: string, token: string) {
-  const res = await fetch(`http://localhost:3000/api/blog/${id}`, {
+  const res = await fetch(`${production}/api/blog/${id}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -94,7 +98,7 @@ export async function updateBlogbyId(
   blogData: Record<string, any>,
   token: string
 ) {
-  const res = await fetch(`http://localhost:3000/api/blog/${id}`, {
+  const res = await fetch(`${production}/api/blog/${id}`, {
     method: "PUT",
     headers: {
       Authorization: `Bearer ${token}`,

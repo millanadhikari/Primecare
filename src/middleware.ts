@@ -4,6 +4,7 @@ import type { NextRequest } from 'next/server';
 const protectedPaths = ['/crm', '/clients'];
 
 export function middleware(request: NextRequest) {
+  console.log('Middleware triggered for:', request);
   const { pathname } = request.nextUrl;
 
   // Check if path is protected
