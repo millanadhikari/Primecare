@@ -32,6 +32,7 @@ import {
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { MobileNav } from "@/components/ui/mobile-nav";
+import { createMessage } from "../lib/messageApi";
 
 export default function Contact() {
   const [isVisible, setIsVisible] = useState(false);
@@ -42,6 +43,8 @@ export default function Contact() {
     service: "",
     message: "",
     preferredContact: "",
+    priority: "High",
+    category: "Inquiry",
   });
 
   useEffect(() => {
@@ -57,11 +60,29 @@ export default function Contact() {
     });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission here
-    console.log("Form submitted:", formData);
-    alert("Thank you for your inquiry! We'll be in touch within 24 hours.");
+
+    try {
+      const response = await createMessage(formData);
+      console.log("Form data submitted:", response);
+      if (response.status == "success") {
+        alert("Your message has been sent!");
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          service: "",
+          message: "",
+          preferredContact: "",
+          priority: "High",
+          category: "Inquiry",
+        });
+      }
+    } catch (error) {
+      console.error("Error sending message:", error);
+      alert("There was an error sending your message. Please try again later.");
+    }
   };
 
   const contactMethods = [
@@ -99,7 +120,6 @@ export default function Contact() {
       phone: "+61 451103939",
       email: "info@primechoicecare.com.au",
     },
-    
   ];
 
   return (
@@ -547,9 +567,7 @@ export default function Contact() {
                 <div className="bg-blue-600 p-2 rounded-xl">
                   <Heart className="h-6 w-6 text-white" />
                 </div>
-                <span className="text-xl font-bold">
-                  PrimeChoice Care
-                </span>
+                <span className="text-xl font-bold">PrimeChoice Care</span>
               </div>
               <p className="text-gray-400">
                 Providing compassionate care and professional support services

@@ -13,6 +13,7 @@ import {
   FileText,
   Home,
   Menu,
+  MessageSquare,
   PieChart,
   Settings,
   Users,
@@ -242,10 +243,10 @@ export function Sidebar({ isCollapsed, onCollapse }: SidebarProps) {
                 label="Blog Management"
                 isCollapsed={isCollapsed}
               />
-              <SidebarLink
-                href="/accessibility"
-                icon={<AccessibilityIcon className="h-5 w-5" />}
-                label="Accessibility"
+               <SidebarLink
+                href="/crm/messages"
+                icon={<MessageSquare className="h-5 w-5" />}
+                label="Messages"
                 isCollapsed={isCollapsed}
               />
             </NavGroup>
