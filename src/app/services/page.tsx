@@ -356,7 +356,7 @@ export default function Services() {
                 <Heart className="h-6 w-6 text-white" />
               </div>
               <span className="text-xl font-bold text-gray-900">
-                Pathway Care Solutions
+                PrimeChoice Care
               </span>
             </div>
             <div className="hidden md:flex items-center space-x-8">
@@ -615,7 +615,7 @@ export default function Services() {
             <h2 className="text-3xl md:text-4xl font-bold">
               NDIS Registered Provider
             </h2>
-            <p className="text-xl text-blue-100 max-w-4xl mx-auto leading-relaxed">
+            <p className="text-md text-blue-100 max-w-4xl mx-auto leading-relaxed">
               We are a fully registered NDIS provider, offering comprehensive
               support coordination and care services. Our team works with you to
               maximize your NDIS funding and achieve your goals through
@@ -651,7 +651,7 @@ export default function Services() {
               <Button
                 asChild
                 size="lg"
-                className="bg-white text-blue-600 hover:bg-gray-100 text-lg px-8"
+                className="bg-white text-blue-600 hover:bg-gray-100 text-md px-8"
               >
                 <Link href="/contact">Discuss Your NDIS Plan</Link>
               </Button>
@@ -659,9 +659,9 @@ export default function Services() {
                 asChild
                 variant="outline"
                 size="lg"
-                className="border-white text-white hover:bg-white hover:text-blue-600 text-lg px-8"
+                className="border-white text-blue-600 hover:bg-white hover:text-blue-600 text-md px-8"
               >
-                <Link href="tel:1300728422">Call 1300 PATH CARE</Link>
+                <Link href="tel:1300728422">Call +61 451103939</Link>
               </Button>
             </div>
           </div>
@@ -709,9 +709,7 @@ export default function Services() {
                 <div className="bg-blue-600 p-2 rounded-xl">
                   <Heart className="h-6 w-6 text-white" />
                 </div>
-                <span className="text-xl font-bold">
-                  Pathway Care Solutions
-                </span>
+                <span className="text-xl font-bold">Prime Choice Care</span>
               </div>
               <p className="text-gray-400">
                 Providing compassionate care and professional support services
@@ -781,11 +779,11 @@ export default function Services() {
               <div className="space-y-3 text-gray-400">
                 <div className="flex items-center space-x-2">
                   <Phone className="h-4 w-4" />
-                  <span>1300 PATH CARE</span>
+                  <span>+61 451103939</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Phone className="h-4 w-4" />
-                  <span>info@pathwaycaresolutions.com.au</span>
+                  <span>info@primechoicecare.com.au</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Phone className="h-4 w-4" />
@@ -796,8 +794,8 @@ export default function Services() {
           </div>
           <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
             <p>
-              &copy; 2024 Pathway Care Solutions. All rights reserved. | ABN: 12
-              345 678 901
+              &copy; 2024 Prime Choice Care. All rights reserved. | ABN: 12 345
+              678 901
             </p>
           </div>
         </div>

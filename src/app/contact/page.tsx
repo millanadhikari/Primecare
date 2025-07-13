@@ -69,7 +69,7 @@ export default function Contact() {
       icon: Phone,
       title: "Phone Support",
       description: "Speak directly with our care coordinators",
-      contact: "1300 PATH CARE (1300 728 422)",
+      contact: "+61 451103939",
       hours: "Mon-Fri: 8:00 AM - 6:00 PM",
       action: "Call Now",
     },
@@ -77,7 +77,7 @@ export default function Contact() {
       icon: Mail,
       title: "Email Enquiries",
       description: "Send us your questions anytime",
-      contact: "info@pathwaycaresolutions.com.au",
+      contact: "info@primechoicecare.com.au",
       hours: "Response within 24 hours",
       action: "Send Email",
     },
@@ -85,7 +85,7 @@ export default function Contact() {
       icon: MessageSquare,
       title: "Emergency Support",
       description: "24/7 emergency care coordination",
-      contact: "1800 EMERGENCY (1800 363 743)",
+      contact: "+61 451103939",
       hours: "Available 24/7",
       action: "Emergency Line",
     },
@@ -96,8 +96,8 @@ export default function Contact() {
       city: "Sydney",
       state: "NSW",
       address: "Level 15, 135 King Street, Sydney NSW 2000",
-      phone: "(02) 9876 5432",
-      email: "sydney@pathwaycaresolutions.com.au",
+      phone: "+61 451103939",
+      email: "info@primechoicecare.com.au",
     },
     
   ];
@@ -113,7 +113,7 @@ export default function Contact() {
                 <Heart className="h-6 w-6 text-white" />
               </div>
               <span className="text-xl font-bold text-gray-900">
-                Pathway Care Solutions
+                PrimeChoice Care
               </span>
             </div>
             <div className="hidden md:flex items-center space-x-8">
@@ -519,17 +519,17 @@ export default function Contact() {
               <Button
                 asChild
                 size="lg"
-                className="bg-white text-blue-600 hover:bg-gray-100 text-lg px-8"
+                className="bg-white text-blue-600 hover:bg-gray-100 text-md px-8"
               >
-                <Link href="tel:1300728422">Call 1300 PATH CARE</Link>
+                <Link href="tel:1300728422">Call +61 451103939</Link>
               </Button>
               <Button
                 asChild
                 variant="outline"
                 size="lg"
-                className="border-white text-white hover:bg-white hover:text-blue-600 text-lg px-8"
+                className="border-white text-blue-600 hover:bg-white hover:text-blue-600 text-md px-8"
               >
-                <Link href="mailto:info@pathwaycaresolutions.com.au">
+                <Link href="mailto:info@primechoicecare.com.au">
                   Send Email
                 </Link>
               </Button>
@@ -548,7 +548,7 @@ export default function Contact() {
                   <Heart className="h-6 w-6 text-white" />
                 </div>
                 <span className="text-xl font-bold">
-                  Pathway Care Solutions
+                  PrimeChoice Care
                 </span>
               </div>
               <p className="text-gray-400">
@@ -619,11 +619,11 @@ export default function Contact() {
               <div className="space-y-3 text-gray-400">
                 <div className="flex items-center space-x-2">
                   <Phone className="h-4 w-4" />
-                  <span>1300 PATH CARE</span>
+                  <span>+61 451103939</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <Mail className="h-4 w-4" />
-                  <span>info@pathwaycaresolutions.com.au</span>
+                  <span>info@primechoicecare.com.au</span>
                 </div>
                 <div className="flex items-center space-x-2">
                   <MapPin className="h-4 w-4" />

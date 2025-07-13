@@ -375,7 +375,7 @@ export default function Home() {
               <Button
                 asChild
                 size="lg"
-                className="bg-white text-blue-600 hover:bg-gray-100 text-lg px-8"
+                className="bg-white text-blue-600 hover:bg-gray-100 text-md px-8"
               >
                 <Link href="/contact">Contact Us Today</Link>
               </Button>
@@ -383,9 +383,9 @@ export default function Home() {
                 asChild
                 variant="outline"
                 size="lg"
-                className="border-white hover:bg-white text-blue-600 text-lg px-8"
+                className="border-white hover:bg-white text-blue-600 text-md px-8"
               >
-                <Link href="tel:1300728422">Call 1300 PATH CARE</Link>
+                <Link href="tel:1300728422">Call +61 451103939</Link>
               </Button>
             </div>
           </div>
@@ -401,9 +401,7 @@ export default function Home() {
                 <div className="bg-blue-600 p-2 rounded-xl">
                   <Heart className="h-6 w-6 text-white" />
                 </div>
-                <span className="text-xl font-bold">
-                  Prime Choice Care
-                </span>
+                <span className="text-xl font-bold">Prime Choice Care</span>
               </div>
               <p className="text-gray-400">
                 Providing compassionate care and professional support services
@@ -488,8 +486,8 @@ export default function Home() {
           </div>
           <div className="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
             <p>
-              &copy; 2025 Primes Choice Care. All rights reserved. | ABN: 12
-              345 678 901
+              &copy; 2025 Primes Choice Care. All rights reserved. | ABN: 12 345
+              678 901
             </p>
           </div>
         </div>

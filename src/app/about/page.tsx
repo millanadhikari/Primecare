@@ -574,7 +574,7 @@ export default function About() {
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
               Ready to Experience the Pathway Difference?
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-md text-gray-600">
               Contact us today to learn more about our services and how we can
               support you
             </p>
@@ -582,7 +582,7 @@ export default function About() {
               <Button
                 asChild
                 size="lg"
-                className="bg-blue-600 hover:bg-blue-700 text-lg px-8"
+                className="bg-blue-600 hover:bg-blue-700 text-md px-8"
               >
                 <Link href="/contact">Get in Touch</Link>
               </Button>
@@ -590,9 +590,9 @@ export default function About() {
                 asChild
                 variant="outline"
                 size="lg"
-                className="text-lg px-8 border-blue-200 hover:bg-blue-50"
+                className="text-MD px-8 border-blue-200 hover:bg-blue-50"
               >
-                <Link href="tel:1300728422">Call 1300 PATH CARE</Link>
+                <Link href="tel:1300728422">Call +61 451103939</Link>
               </Button>
             </div>
           </div>
