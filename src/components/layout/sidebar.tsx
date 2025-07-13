@@ -27,6 +27,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useAuth } from "@/app/context/AuthContext";
+import { Avatar } from "@radix-ui/react-avatar";
+import { AvatarFallback, AvatarImage } from "../ui/avatar";
 
 interface SidebarLinkProps {
   href: string;
@@ -274,11 +276,19 @@ export function Sidebar({ isCollapsed, onCollapse }: SidebarProps) {
               isCollapsed ? "justify-center" : ""
             )}
           >
-            <div className="h-8 w-8 rounded-full bg-primary/10">
-              <div className="flex h-full w-full items-center justify-center text-sm font-semibold text-primary">
-                DR
-              </div>
-            </div>
+            <Avatar className="h-10 w-10 rounded-full">
+              <AvatarImage
+                src={
+                  user?.data?.user.profileImage ||
+                  "https://via.placeholder.com/150"
+                }
+                className="rounded-full"
+              />{" "}
+              <AvatarFallback className="text-lg">
+                {user?.data?.user?.firstName[0]}
+                {user?.data?.user?.lastName[0]}
+              </AvatarFallback>
+            </Avatar>
             <div
               className={cn(
                 "transition-opacity",
