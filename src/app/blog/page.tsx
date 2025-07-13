@@ -62,7 +62,7 @@ export default function Blog() {
           author: post.author || "Admin",
           publishDate: post.publishDate,
           type: post.type || "General",
-          image: post.image || "/default-image.jpg",
+          image: post.featuredImage || "/default-image.jpg",
           excerpt: post.excerpt || "No description available.",
           readTime: post.readTime || "5 min read",
           isFeatured: post.isFeatured,
@@ -302,7 +302,7 @@ export default function Blog() {
                       {new Date(post.publishDate).toLocaleDateString()}
                     </span>
                   </div>
-                  <Button variant="outline" className="w-full">
+                  <Button variant="outline" className="w-full " onClick={() => router.push(`/blog/${post.id}`)}>
                     Read More
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>

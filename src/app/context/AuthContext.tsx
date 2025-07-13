@@ -109,15 +109,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
 
     try {
-      const res = await axios.post(
-        "/auth/change-password",
-        passwords,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const res = await axios.post("/auth/change-password", passwords, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
 
       return res.data;
     } catch (err) {

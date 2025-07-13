@@ -196,7 +196,7 @@ export function NewBlogForm() {
         const formData = new FormData();
         formData.append("file", featuredImageFile);
 
-        const res = await fetch("http://localhost:3000/api/upload", {
+        const res = await fetch("https://primebackend.onrender.com/api/upload", {
           method: "POST",
           body: formData,
         });

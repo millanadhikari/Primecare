@@ -1,6 +1,6 @@
 const production = "https://primebackend.onrender.com";
 
-const local = "http://localhost:3000";
+// const production = "http://localhost:3000";
 
 export async function createBlog(blogData: Record<string, any>, token: string) {
   const res = await fetch(`${production}/api/blog/create`, {

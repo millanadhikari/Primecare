@@ -215,7 +215,7 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
 
       // 🔁 DELETE OLD IMAGE if a new image is selected
       if (selectedProfileImage && profileImagePublicId) {
-        await fetch("http://localhost:3000/api/upload", {
+        await fetch("https://primebackend.onrender.com/api/upload", {
           method: "DELETE",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ publicId: profileImagePublicId }),
@@ -227,10 +227,13 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
         const formData = new FormData();
         formData.append("file", selectedProfileImage);
 
-        const response = await fetch("http://localhost:3000/api/upload", {
-          method: "POST",
-          body: formData,
-        });
+        const response = await fetch(
+          "https://primebackend.onrender.com/api/upload",
+          {
+            method: "POST",
+            body: formData,
+          }
+        );
 
         const data = await response.json();
         if (!response.ok || !data.url) throw new Error("Image upload failed");
@@ -508,7 +511,11 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
                 </div>
 
                 {isEditing && (
-                  <Button disabled={loading} onClick={handleSave}className="w-full">
+                  <Button
+                    disabled={loading}
+                    onClick={handleSave}
+                    className="w-full"
+                  >
                     <Check className="mr-2 h-4 w-4" />
                     {loading ? "Saving..." : "Save Changes"}
                   </Button>

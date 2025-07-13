@@ -46,130 +46,6 @@ import { get } from "http";
 import { createBlog, deleteBlog, getBlogs } from "@/app/lib/blogApi";
 import { set } from "date-fns";
 
-// Sample blog data
-const initialBlogs = [
-  {
-    id: "1",
-    title: "Understanding NDIS Support Coordination",
-    author: "Dr. Rebecca Chen",
-    authorAvatar: "",
-    type: "Educational",
-    status: "Published",
-    publishedDate: "2025-04-08",
-    views: 1250,
-    excerpt:
-      "A comprehensive guide to NDIS support coordination and how it can benefit participants...",
-    featuredImage:
-      "https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=400",
-    tags: ["NDIS", "Support", "Coordination"],
-  },
-  {
-    id: "2",
-    title: "Accessibility in Healthcare: Best Practices",
-    author: "Dr. Mark Johnson",
-    authorAvatar: "",
-    type: "Best Practices",
-    status: "Published",
-    publishedDate: "2025-04-05",
-    views: 890,
-    excerpt:
-      "Exploring the latest best practices for making healthcare more accessible to people with disabilities...",
-    featuredImage:
-      "https://images.pexels.com/photos/3279197/pexels-photo-3279197.jpeg?auto=compress&cs=tinysrgb&w=400",
-    tags: ["Accessibility", "Healthcare", "Disability"],
-  },
-  {
-    id: "3",
-    title: "Mental Health Support for Disability Care",
-    author: "Sarah Williams",
-    authorAvatar: "",
-    type: "Mental Health",
-    status: "Draft",
-    publishedDate: "2025-04-03",
-    views: 0,
-    excerpt:
-      "The importance of mental health support in disability care and effective strategies...",
-    featuredImage:
-      "https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=400",
-    tags: ["Mental Health", "Support", "Care"],
-  },
-  {
-    id: "4",
-    title: "Technology Solutions for Independent Living",
-    author: "Dr. Rebecca Chen",
-    authorAvatar: "",
-    type: "Technology",
-    status: "Published",
-    publishedDate: "2025-04-01",
-    views: 1580,
-    excerpt:
-      "How modern technology is empowering people with disabilities to live more independently...",
-    featuredImage:
-      "https://images.pexels.com/photos/3184339/pexels-photo-3184339.jpeg?auto=compress&cs=tinysrgb&w=400",
-    tags: ["Technology", "Independence", "Innovation"],
-  },
-  {
-    id: "5",
-    title: "Family Support Strategies in Disability Care",
-    author: "Jennifer Martinez",
-    authorAvatar: "",
-    type: "Family Support",
-    status: "Published",
-    publishedDate: "2025-03-28",
-    views: 720,
-    excerpt:
-      "Supporting families in their journey of caring for loved ones with disabilities...",
-    featuredImage:
-      "https://images.pexels.com/photos/3184360/pexels-photo-3184360.jpeg?auto=compress&cs=tinysrgb&w=400",
-    tags: ["Family", "Support", "Care"],
-  },
-  {
-    id: "6",
-    title: "Workplace Inclusion for People with Disabilities",
-    author: "Michael Thompson",
-    authorAvatar: "",
-    type: "Workplace",
-    status: "Scheduled",
-    publishedDate: "2025-04-15",
-    views: 0,
-    excerpt:
-      "Creating inclusive workplaces that support employees with disabilities...",
-    featuredImage:
-      "https://images.pexels.com/photos/3184287/pexels-photo-3184287.jpeg?auto=compress&cs=tinysrgb&w=400",
-    tags: ["Workplace", "Inclusion", "Employment"],
-  },
-  {
-    id: "7",
-    title: "Nutrition and Wellness in Disability Care",
-    author: "Dr. Lisa Anderson",
-    authorAvatar: "",
-    type: "Health & Wellness",
-    status: "Published",
-    publishedDate: "2025-03-25",
-    views: 950,
-    excerpt:
-      "The role of proper nutrition and wellness programs in disability care...",
-    featuredImage:
-      "https://images.pexels.com/photos/3184298/pexels-photo-3184298.jpeg?auto=compress&cs=tinysrgb&w=400",
-    tags: ["Nutrition", "Wellness", "Health"],
-  },
-  {
-    id: "8",
-    title: "Community Integration Programs",
-    author: "David Wilson",
-    authorAvatar: "",
-    type: "Community",
-    status: "Published",
-    publishedDate: "2025-03-22",
-    views: 680,
-    excerpt:
-      "Building stronger communities through effective integration programs...",
-    featuredImage:
-      "https://images.pexels.com/photos/3184317/pexels-photo-3184317.jpeg?auto=compress&cs=tinysrgb&w=400",
-    tags: ["Community", "Integration", "Programs"],
-  },
-];
-
 export default function BlogsPage() {
   const router = useRouter();
   const [blogs, setBlogs] = useState(null);
@@ -431,8 +307,8 @@ export default function BlogsPage() {
                   {currentBlogs?.map((blog) => (
                     <TableRow key={blog.id}>
                       <TableCell>
-                        <div className="flex items-center space-x-3">
-                          <div className="">
+                        <div className="flex  space-x-3">
+                          <div className="rounded-full h-20 w-12 flex-shrink-0">
                             {blog?.featuredImage && (
                               <img
                                 src={blog.featuredImage}
