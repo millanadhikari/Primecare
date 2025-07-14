@@ -50,6 +50,7 @@ import {
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
 import { getStaffs } from "@/app/lib/staffApi";
+import { SkeletonRow } from "@/components/layout/SkeletonRow";
 
 // Sample staff data
 const initialStaff = [
@@ -107,6 +108,7 @@ export default function StaffDirectoryPage() {
   const [statusFilter, setStatusFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage, setRecordsPerPage] = useState(10);
+  const [loading, setLoading] = useState(false);
 
   const handleDeleteStaff = (id: string) => {
     setStaff(staff.filter((s) => s.id !== id));
@@ -175,7 +177,7 @@ export default function StaffDirectoryPage() {
     const token = localStorage.getItem("accessToken");
     if (!token) return;
 
-    // setLoading(true);
+    setLoading(true);
     try {
       const data = await getStaffs(token, {
         searchQuery,
@@ -190,7 +192,7 @@ export default function StaffDirectoryPage() {
     } catch (err) {
       console.error("Error fetching clients:", err);
     } finally {
-      // setLoading(false);
+      setLoading(false);
     }
   };
   useEffect(() => {
@@ -290,76 +292,91 @@ export default function StaffDirectoryPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {currentStaffs?.map((staffMember) => (
-                  <TableRow key={staffMember.id}>
-                    <TableCell className="font-medium">
-                      {staffMember?.firstName} {staffMember?.lastName}
-                    </TableCell>
-                    <TableCell>{staffMember.gender}</TableCell>
-                    <TableCell>{staffMember.role}</TableCell>
-                    <TableCell className="hidden md:table-cell">
-                      {staffMember.email}
-                    </TableCell>
-                    <TableCell className="hidden lg:table-cell">
-                      {staffMember.phone}
-                    </TableCell>
-                    <TableCell className="hidden xl:table-cell">
-                      {staffMember.employmentType}
-                    </TableCell>
-                    <TableCell className="hidden xl:table-cell">
-                      {staffMember.jobTitle}
-                    </TableCell>
-                    <TableCell className="hidden lg:table-cell">
-                      {new Date(staffMember.joinedDate).toLocaleDateString()}{" "}
-                    </TableCell>
-                    <TableCell className="hidden md:table-cell">
-                      {staffMember.lastLogin}
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={
-                          staffMember.isActive === true ? "default" : "outline"
-                        }
-                      >
-                        {staffMember.isActive === true ? "Active" : "Inactive"}
-                      </Badge>
-                    </TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon">
-                            <MoreVertical className="h-4 w-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                          <DropdownMenuItem
-                            onClick={() =>
-                              router.push(`/crm/staff/${staffMember.id}`)
+                {loading
+                  ? // Render 5 skeleton rows
+                    Array.from({ length: 5 }).map((_, i) => (
+                      <SkeletonRow key={i} />
+                    ))
+                  : currentStaffs?.map((staffMember) => (
+                      <TableRow key={staffMember.id}>
+                        <TableCell className="font-medium">
+                          {staffMember?.firstName} {staffMember?.lastName}
+                        </TableCell>
+                        <TableCell>{staffMember.gender}</TableCell>
+                        <TableCell>{staffMember.role}</TableCell>
+                        <TableCell className="hidden md:table-cell">
+                          {staffMember.email}
+                        </TableCell>
+                        <TableCell className="hidden lg:table-cell">
+                          {staffMember.phone}
+                        </TableCell>
+                        <TableCell className="hidden xl:table-cell">
+                          {staffMember.employmentType}
+                        </TableCell>
+                        <TableCell className="hidden xl:table-cell">
+                          {staffMember.jobTitle}
+                        </TableCell>
+                        <TableCell className="hidden lg:table-cell">
+                          {new Date(
+                            staffMember.joinedDate
+                          ).toLocaleDateString()}{" "}
+                        </TableCell>
+                        <TableCell className="hidden md:table-cell">
+                          {staffMember.lastLogin}
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={
+                              staffMember.isActive === true
+                                ? "default"
+                                : "outline"
                             }
                           >
-                            <ExternalLink className="mr-2 h-4 w-4" />
-                            View Details
-                          </DropdownMenuItem>
-                          {!staffMember.hasAccount && (
-                            <DropdownMenuItem
-                              onClick={() => handleCreateAccount(staffMember)}
-                            >
-                              <Lock className="mr-2 h-4 w-4" />
-                              Create Account
-                            </DropdownMenuItem>
-                          )}
-                          <DropdownMenuItem
-                            className="text-destructive"
-                            onClick={() => handleDeleteStaff(staffMember.id)}
-                          >
-                            <Trash2 className="mr-2 h-4 w-4" />
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                            {staffMember.isActive === true
+                              ? "Active"
+                              : "Inactive"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell>
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <Button variant="ghost" size="icon">
+                                <MoreVertical className="h-4 w-4" />
+                              </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                              <DropdownMenuItem
+                                onClick={() =>
+                                  router.push(`/crm/staff/${staffMember.id}`)
+                                }
+                              >
+                                <ExternalLink className="mr-2 h-4 w-4" />
+                                View Details
+                              </DropdownMenuItem>
+                              {!staffMember.hasAccount && (
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    handleCreateAccount(staffMember)
+                                  }
+                                >
+                                  <Lock className="mr-2 h-4 w-4" />
+                                  Create Account
+                                </DropdownMenuItem>
+                              )}
+                              <DropdownMenuItem
+                                className="text-destructive"
+                                onClick={() =>
+                                  handleDeleteStaff(staffMember.id)
+                                }
+                              >
+                                <Trash2 className="mr-2 h-4 w-4" />
+                                Delete
+                              </DropdownMenuItem>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </TableCell>
+                      </TableRow>
+                    ))}
               </TableBody>
             </Table>
           </div>

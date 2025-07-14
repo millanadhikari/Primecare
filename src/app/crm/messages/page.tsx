@@ -56,6 +56,7 @@ import {
   getMessages,
   updateMessage,
 } from "@/app/lib/messageApi";
+import { SkeletonRow } from "@/components/layout/SkeletonRow";
 
 // Sample messages data
 const initialMessages = [
@@ -167,6 +168,7 @@ export default function MessagesPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage, setRecordsPerPage] = useState(10);
   const [selectedMessages, setSelectedMessages] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false)
 
   const handleMarkAsRead = async (id: string) => {
     try {
@@ -400,6 +402,7 @@ export default function MessagesPage() {
 
   const fetchMessages = async () => {
     const token = localStorage.getItem("token");
+    setLoading(true)
     // if (!token) {
     //   toast.error("You must be logged in to view messages");
     //   return;
@@ -414,6 +417,7 @@ export default function MessagesPage() {
       });
       console.log("Fetched messages:", response);
       setMessages(response?.data?.messages);
+      setLoading(false)
       console.log("Messages set:", messages);
     } catch (error) {
       console.error("Failed to fetch messages:", error);
@@ -579,185 +583,194 @@ export default function MessagesPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {currentMessages?.map((message) => (
-                    <TableRow
-                      key={message.id}
-                      className={`cursor-pointer transition-colors hover:bg-accent ${
-                        !message.isRead ? "bg-blue-50 dark:bg-blue-950/20" : ""
-                      }`}
-                      //   onClick={() => router.push(`/crm/messages/${message.id}`)}
-                      onClick={async () => {
-                        try {
-                          await handleMarkAsRead(message.id);
-                          router.push(`/crm/messages/${message.id}`);
-                        } catch (error) {
-                          console.error(
-                            "Error handling message action:",
-                            error
-                          );
-                          toast.error("Something went wrong.");
-                        }
-                      }}
-                    >
-                      <TableCell onClick={(e) => e.stopPropagation()}>
-                        <input
-                          type="checkbox"
-                          checked={selectedMessages.includes(message.id)}
-                          onChange={() => handleSelectMessage(message.id)}
-                          className="rounded border border-input"
-                        />
-                      </TableCell>
-                      <TableCell onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center gap-1">
-                          {!message.isRead && (
-                            <div className="h-2 w-2 rounded-full bg-blue-500" />
-                          )}
-                          <button
-                            onClick={() => handleToggleStar(message.id)}
-                            className="text-muted-foreground hover:text-yellow-500"
-                          >
-                            {message.isStarred ? (
-                              <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
-                            ) : (
-                              <StarOff className="h-4 w-4" />
-                            )}
-                          </button>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center space-x-3">
-                          <Avatar className="h-10 w-10 bg-gray-100">
-                            <AvatarFallback className="text-xs mx-auto">
-                              {message.name
-                                .split(" ")
-                                .map((n) => n[0])
-                                .join("")}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div>
+                  {loading
+                    ? // Render 5 skeleton rows
+                      Array.from({ length: 5 }).map((_, i) => (
+                        <SkeletonRow key={i} />
+                      ))
+                    : currentMessages?.map((message) => (
+                        <TableRow
+                          key={message.id}
+                          className={`cursor-pointer transition-colors hover:bg-accent ${
+                            !message.isRead
+                              ? "bg-blue-50 dark:bg-blue-950/20"
+                              : ""
+                          }`}
+                          //   onClick={() => router.push(`/crm/messages/${message.id}`)}
+                          onClick={async () => {
+                            try {
+                              await handleMarkAsRead(message.id);
+                              router.push(`/crm/messages/${message.id}`);
+                            } catch (error) {
+                              console.error(
+                                "Error handling message action:",
+                                error
+                              );
+                              toast.error("Something went wrong.");
+                            }
+                          }}
+                        >
+                          <TableCell onClick={(e) => e.stopPropagation()}>
+                            <input
+                              type="checkbox"
+                              checked={selectedMessages.includes(message.id)}
+                              onChange={() => handleSelectMessage(message.id)}
+                              className="rounded border border-input"
+                            />
+                          </TableCell>
+                          <TableCell onClick={(e) => e.stopPropagation()}>
+                            <div className="flex items-center gap-1">
+                              {!message.isRead && (
+                                <div className="h-2 w-2 rounded-full bg-blue-500" />
+                              )}
+                              <button
+                                onClick={() => handleToggleStar(message.id)}
+                                className="text-muted-foreground hover:text-yellow-500"
+                              >
+                                {message.isStarred ? (
+                                  <Star className="h-4 w-4 fill-yellow-500 text-yellow-500" />
+                                ) : (
+                                  <StarOff className="h-4 w-4" />
+                                )}
+                              </button>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center space-x-3">
+                              <Avatar className="h-10 w-10 bg-gray-100">
+                                <AvatarFallback className="text-xs ">
+                                  {message.name
+                                    .split(" ")
+                                    .map((n) => n[0])
+                                    .join("")}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div>
+                                <div
+                                  className={`font-medium ${
+                                    !message.isRead ? "font-semibold" : ""
+                                  }`}
+                                >
+                                  {message.name}
+                                </div>
+                                <div className="text-sm text-muted-foreground">
+                                  {message.email}
+                                </div>
+                              </div>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center gap-2">
+                              {getCategoryIcon(message.category)}
+                              <span
+                                className={
+                                  !message.isRead ? "font-semibold" : ""
+                                }
+                              >
+                                {message.service}
+                              </span>
+                            </div>
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell">
                             <div
-                              className={`font-medium ${
-                                !message.isRead ? "font-semibold" : ""
+                              className={`line-clamp-2 text-sm ${
+                                !message.isRead
+                                  ? "font-medium"
+                                  : "text-muted-foreground"
                               }`}
                             >
-                              {message.name}
+                              {message.message}
                             </div>
+                          </TableCell>
+                          <TableCell className="hidden lg:table-cell">
+                            <Badge variant={getPriorityColor(message.priority)}>
+                              {message.priority}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="hidden lg:table-cell">
+                            <Badge variant="outline">{message.category}</Badge>
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell">
                             <div className="text-sm text-muted-foreground">
-                              {message.email}
+                              {formatDate(message.receivedAt)}
                             </div>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          {getCategoryIcon(message.category)}
-                          <span
-                            className={!message.isRead ? "font-semibold" : ""}
-                          >
-                            {message.service}
-                          </span>
-                        </div>
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        <div
-                          className={`line-clamp-2 text-sm ${
-                            !message.isRead
-                              ? "font-medium"
-                              : "text-muted-foreground"
-                          }`}
-                        >
-                          {message.message}
-                        </div>
-                      </TableCell>
-                      <TableCell className="hidden lg:table-cell">
-                        <Badge variant={getPriorityColor(message.priority)}>
-                          {message.priority}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="hidden lg:table-cell">
-                        <Badge variant="outline">{message.category}</Badge>
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        <div className="text-sm text-muted-foreground">
-                          {formatDate(message.receivedAt)}
-                        </div>
-                      </TableCell>
-                      <TableCell onClick={(e) => e.stopPropagation()}>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon">
-                              <MoreVertical className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem
-                              onClick={() =>
-                                router.push(`/messages/${message.id}`)
-                              }
-                            >
-                              <Eye className="mr-2 h-4 w-4" />
-                              View Details
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() =>
-                                message.isRead
-                                  ? handleMarkAsUnread(message.id)
-                                  : handleMarkAsRead(message.id)
-                              }
-                            >
-                              {message.isRead ? (
-                                <>
-                                  <Mail className="mr-2 h-4 w-4" />
-                                  Mark as Unread
-                                </>
-                              ) : (
-                                <>
-                                  <MailOpen className="mr-2 h-4 w-4" />
-                                  Mark as Read
-                                </>
-                              )}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => handleToggleStar(message.id)}
-                            >
-                              {message.isStarred ? (
-                                <>
-                                  <StarOff className="mr-2 h-4 w-4" />
-                                  Remove Star
-                                </>
-                              ) : (
-                                <>
-                                  <Star className="mr-2 h-4 w-4" />
-                                  Add Star
-                                </>
-                              )}
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() =>
-                                (window.location.href = `mailto:${message.email}`)
-                              }
-                            >
-                              <Reply className="mr-2 h-4 w-4" />
-                              Reply
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => handleArchive(message.id)}
-                            >
-                              <Archive className="mr-2 h-4 w-4" />
-                              Archive
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              className="text-destructive"
-                              onClick={() => handleDelete(message.id)}
-                            >
-                              <Trash2 className="mr-2 h-4 w-4" />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                          </TableCell>
+                          <TableCell onClick={(e) => e.stopPropagation()}>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon">
+                                  <MoreVertical className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    router.push(`/messages/${message.id}`)
+                                  }
+                                >
+                                  <Eye className="mr-2 h-4 w-4" />
+                                  View Details
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    message.isRead
+                                      ? handleMarkAsUnread(message.id)
+                                      : handleMarkAsRead(message.id)
+                                  }
+                                >
+                                  {message.isRead ? (
+                                    <>
+                                      <Mail className="mr-2 h-4 w-4" />
+                                      Mark as Unread
+                                    </>
+                                  ) : (
+                                    <>
+                                      <MailOpen className="mr-2 h-4 w-4" />
+                                      Mark as Read
+                                    </>
+                                  )}
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => handleToggleStar(message.id)}
+                                >
+                                  {message.isStarred ? (
+                                    <>
+                                      <StarOff className="mr-2 h-4 w-4" />
+                                      Remove Star
+                                    </>
+                                  ) : (
+                                    <>
+                                      <Star className="mr-2 h-4 w-4" />
+                                      Add Star
+                                    </>
+                                  )}
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    (window.location.href = `mailto:${message.email}`)
+                                  }
+                                >
+                                  <Reply className="mr-2 h-4 w-4" />
+                                  Reply
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => handleArchive(message.id)}
+                                >
+                                  <Archive className="mr-2 h-4 w-4" />
+                                  Archive
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  className="text-destructive"
+                                  onClick={() => handleDelete(message.id)}
+                                >
+                                  <Trash2 className="mr-2 h-4 w-4" />
+                                  Delete
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </TableCell>
+                        </TableRow>
+                      ))}
                 </TableBody>
               </Table>
             </div>

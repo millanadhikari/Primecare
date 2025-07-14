@@ -45,6 +45,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { get } from "http";
 import { createBlog, deleteBlog, getBlogs } from "@/app/lib/blogApi";
 import { set } from "date-fns";
+import { SkeletonRow } from "@/components/layout/SkeletonRow";
 
 export default function BlogsPage() {
   const router = useRouter();
@@ -54,11 +55,12 @@ export default function BlogsPage() {
   const [typeFilter, setTypeFilter] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage, setRecordsPerPage] = useState(10);
+  const [loading, setLoading] = useState(false);
 
   const fetchBlogs = async () => {
     const token = localStorage.getItem("accessToken");
     if (!token) return;
-
+    setLoading(true);
     try {
       const data = await getBlogs(token, {
         searchQuery,
@@ -68,7 +70,8 @@ export default function BlogsPage() {
         limit: recordsPerPage,
       });
       console.log("Fetched blogs:", data);
-      setBlogs(data?.data?.blogs); // For demo purposes, using static data
+      setBlogs(data?.data?.blogs);
+      setLoading(false); // For demo purposes, using static data
     } catch (error) {
       console.error("Failed to fetch blogs:", error);
       toast.error("Failed to load blogs");
@@ -304,30 +307,35 @@ export default function BlogsPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {currentBlogs?.map((blog) => (
-                    <TableRow key={blog.id}>
-                      <TableCell>
-                        <div className="flex  space-x-3">
-                          <div className="rounded-full h-20 w-12 flex-shrink-0">
-                            {blog?.featuredImage && (
-                              <img
-                                src={blog.featuredImage}
-                                alt={blog.title}
-                                className="w-32 h-12 rounded-full object-cover mx-auto"
-                              />
-                            )}
-                          </div>
-                          <div>
-                            <div className="font-medium">{blog.title}</div>
-                            <div className="text-sm text-muted-foreground line-clamp-1">
-                              {blog.excerpt}
+                  {loading
+                    ? // Render 5 skeleton rows
+                      Array.from({ length: 5 }).map((_, i) => (
+                        <SkeletonRow key={i} />
+                      ))
+                    : currentBlogs?.map((blog) => (
+                        <TableRow key={blog.id}>
+                          <TableCell>
+                            <div className="flex  space-x-3">
+                              <div className="rounded-full h-20 w-12 flex-shrink-0">
+                                {blog?.featuredImage && (
+                                  <img
+                                    src={blog.featuredImage}
+                                    alt={blog.title}
+                                    className="w-32 h-12 rounded-full object-cover mx-auto"
+                                  />
+                                )}
+                              </div>
+                              <div>
+                                <div className="font-medium">{blog.title}</div>
+                                <div className="text-sm text-muted-foreground line-clamp-1">
+                                  {blog.excerpt}
+                                </div>
+                              </div>
                             </div>
-                          </div>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <div className="flex items-center space-x-2">
-                          {/* <Avatar className="h-6 w-6">
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex items-center space-x-2">
+                              {/* <Avatar className="h-6 w-6">
                             <AvatarImage src={blog.authorAvatar} />
                             <AvatarFallback className="text-xs">
                               {blog.author
@@ -336,67 +344,67 @@ export default function BlogsPage() {
                                 .join("")}
                             </AvatarFallback>
                           </Avatar> */}
-                          <span className="text-sm">{blog.author}</span>
-                        </div>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant="outline" className="text-xs">
-                          {blog.type}
-                        </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <Badge variant={getStatusColor(blog.status)}>
-                          {blog.status}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        {formatDate(blog.publishedDate)}
-                      </TableCell>
-                      <TableCell className="hidden lg:table-cell">
-                        {blog?.views?.toLocaleString()}
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon">
-                              <MoreVertical className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem
-                              onClick={() =>
-                                router.push(`/crm/blogs/${blog.id}`)
-                              }
-                            >
-                              <Eye className="mr-2 h-4 w-4" />
-                              View
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() =>
-                                router.push(`/crm/blogs/${blog.id}/edit`)
-                              }
-                            >
-                              <Edit className="mr-2 h-4 w-4" />
-                              Edit
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              onClick={() => handleDuplicateBlog(blog)}
-                            >
-                              <ExternalLink className="mr-2 h-4 w-4" />
-                              Duplicate
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              className="text-destructive"
-                              onClick={() => handleDeleteBlog(blog.id)}
-                            >
-                              <Trash2 className="mr-2 h-4 w-4" />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                              <span className="text-sm">{blog.author}</span>
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant="outline" className="text-xs">
+                              {blog.type}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>
+                            <Badge variant={getStatusColor(blog.status)}>
+                              {blog.status}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell">
+                            {formatDate(blog.publishedDate)}
+                          </TableCell>
+                          <TableCell className="hidden lg:table-cell">
+                            {blog?.views?.toLocaleString()}
+                          </TableCell>
+                          <TableCell>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon">
+                                  <MoreVertical className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    router.push(`/crm/blogs/${blog.id}`)
+                                  }
+                                >
+                                  <Eye className="mr-2 h-4 w-4" />
+                                  View
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    router.push(`/crm/blogs/${blog.id}/edit`)
+                                  }
+                                >
+                                  <Edit className="mr-2 h-4 w-4" />
+                                  Edit
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  onClick={() => handleDuplicateBlog(blog)}
+                                >
+                                  <ExternalLink className="mr-2 h-4 w-4" />
+                                  Duplicate
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  className="text-destructive"
+                                  onClick={() => handleDeleteBlog(blog.id)}
+                                >
+                                  <Trash2 className="mr-2 h-4 w-4" />
+                                  Delete
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </TableCell>
+                        </TableRow>
+                      ))}
                 </TableBody>
               </Table>
             </div>
