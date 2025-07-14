@@ -31,6 +31,15 @@ const eslintConfig = [
       "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
       "@typescript-eslint/no-unused-expressions": "warn",
       "@typescript-eslint/no-this-alias": "warn",
+      "@typescript-eslint/ban-ts-comment": [
+        "error",
+        {
+          "ts-ignore": false, // ✅ Allow @ts-ignore
+          "ts-expect-error": true,
+          "ts-nocheck": true,
+          "ts-check": false
+        }
+      ],
       "react/no-unescaped-entities": "off",
 
       // "@typescript-eslint/ban-types": [
