@@ -144,7 +144,7 @@ export function NewClientForm() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="md:flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" onClick={handleCancel}>
             <ArrowLeft className="h-4 w-4" />
@@ -154,7 +154,7 @@ export function NewClientForm() {
             <p className="text-muted-foreground">Create a new client record</p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 mt-3 md:mt-0">
           <Button variant="outline" onClick={handleCancel} disabled={isLoading}>
             <X className="mr-2 h-4 w-4" />
             Cancel

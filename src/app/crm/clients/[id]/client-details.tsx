@@ -143,6 +143,7 @@ interface ClientDetailsProps {
 
 const PRODUCTION = "https://primebackend.onrender.com/api";
 const LOCAL = "http://localhost:3000/api";
+
 export function ClientDetails({ client }: ClientDetailsProps) {
   const [clientData, setClientData] = useState<ClientData>({
     ...client,
@@ -175,6 +176,7 @@ export function ClientDetails({ client }: ClientDetailsProps) {
   const [isEditingDemographic, setIsEditingDemographic] = useState(false);
   const [isEditingPublicInfo, setIsEditingPublicInfo] = useState(false);
   const [isEditingSettings, setIsEditingSettings] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [contacts, setContacts] = useState<Contact[]>(client.contacts || []);
   const [documents, setDocuments] = useState<Document[]>(
     client.documents || []
@@ -262,6 +264,7 @@ export function ClientDetails({ client }: ClientDetailsProps) {
       religion: clientData.religion,
       languageSpoken: clientData.languageSpoken,
     };
+    setLoading(true);
 
     try {
       const token = localStorage.getItem("accessToken");
@@ -270,6 +273,7 @@ export function ClientDetails({ client }: ClientDetailsProps) {
       setClientData(refreshedClient);
       setIsEditingDemographic(false);
       toast.success("Demographic details updated successfully");
+      setLoading(false);
     } catch (err) {
       console.error(err);
       toast.error("Failed to update demographic details");
@@ -323,7 +327,7 @@ export function ClientDetails({ client }: ClientDetailsProps) {
       smsReminders: clientData.smsReminders,
       invoiceTravel: clientData.invoiceTravel,
     };
-
+    setLoading(true);
     try {
       const token = localStorage.getItem("accessToken");
       if (!token) throw new Error("No auth token");
@@ -337,6 +341,7 @@ export function ClientDetails({ client }: ClientDetailsProps) {
 
       setIsEditingSettings(false);
       toast.success("Settings updated successfully");
+      setLoading(false);
     } catch (err) {
       console.error(err);
       toast.error("Failed to update settings");
@@ -517,11 +522,11 @@ export function ClientDetails({ client }: ClientDetailsProps) {
   return (
     <div className="space-y-6">
       {/* Header with Profile and Actions */}
-      <div className="flex items-center justify-between">
+      <div className="md:flex items-center justify-between">
         <div className="flex items-center gap-4">
           <Avatar className="h-16 w-16">
             <AvatarImage src={clientData?.profilePictureUrl || ""} />
-            <AvatarFallback className="text-lg">
+            <AvatarFallback className="text-lg w-full">
               {clientData.firstName[0]}
               {clientData.lastName[0]}
             </AvatarFallback>
@@ -535,7 +540,7 @@ export function ClientDetails({ client }: ClientDetailsProps) {
             <p className="text-muted-foreground">Client ID: {clientData.id}</p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 mt-3 md:mt-0">
           <Select value={clientData.status} onValueChange={handleStatusChange}>
             <SelectTrigger className="w-[120px]">
               <SelectValue />
@@ -598,7 +603,7 @@ export function ClientDetails({ client }: ClientDetailsProps) {
                 <div className="relative">
                   <Avatar className="h-24 w-24">
                     <AvatarImage src={clientData?.profilePictureUrl || ""} />
-                    <AvatarFallback className="text-lg">
+                    <AvatarFallback className="text-lg w-full">
                       {clientData.firstName[0]}
                       {clientData.lastName[0]}
                     </AvatarFallback>
@@ -801,7 +806,7 @@ export function ClientDetails({ client }: ClientDetailsProps) {
           {isEditingDemographic && (
             <Button onClick={handleSaveDemographic} className="w-fit">
               <Save className="mr-2 h-4 w-4" />
-              Save Changes
+              {loading ? "Saving" : "Save Changes"}
             </Button>
           )}
         </CardContent>
@@ -835,6 +840,7 @@ export function ClientDetails({ client }: ClientDetailsProps) {
                 }
                 disabled={!isEditingPublicInfo}
                 placeholder="Add general information..."
+                className="placeholder:text-sm"
               />
             </div>
             <div className="grid gap-2">
@@ -846,6 +852,7 @@ export function ClientDetails({ client }: ClientDetailsProps) {
                 }
                 disabled={!isEditingPublicInfo}
                 placeholder="Add useful information..."
+                className="placeholder:text-sm"
               />
             </div>
           </div>
@@ -999,7 +1006,7 @@ export function ClientDetails({ client }: ClientDetailsProps) {
           {isEditingSettings && (
             <Button onClick={handleSaveSettings} className="w-fit">
               <Save className="mr-2 h-4 w-4" />
-              Save Changes
+              {loading ? "Saving" : "Save Changes"}
             </Button>
           )}
         </CardContent>
@@ -1007,9 +1014,9 @@ export function ClientDetails({ client }: ClientDetailsProps) {
 
       {/* Documents */}
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
+        <CardHeader className="md:flex md:flex-row md:items-center justify-between">
           <CardTitle>Documents</CardTitle>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 mt-3">
             <Input
               type="file"
               multiple
@@ -1139,7 +1146,7 @@ export function ClientDetails({ client }: ClientDetailsProps) {
 
       {/* Invoices */}
       <Card>
-        <CardHeader className="flex flex-row items-center justify-between">
+        <CardHeader className="md:flex md:flex-row md:items-center justify-between">
           <CardTitle>Invoices</CardTitle>
           <div className="flex items-center gap-2">
             <Input

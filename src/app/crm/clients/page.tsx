@@ -50,148 +50,11 @@ import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { deleteClient, getClients } from "@/app/lib/clientApi";
-
-// Sample clients data
-const initialClients = [
-  {
-    id: "1",
-    name: "James Wilson",
-    age: 45,
-    disability: "Mobility Impairment",
-    status: "Active",
-    lastVisit: "Apr 5, 2025",
-    careManager: "Dr. Rebecca Chen",
-  },
-  {
-    id: "2",
-    name: "Sarah Johnson",
-    age: 32,
-    disability: "Visual Impairment",
-    status: "Active",
-    lastVisit: "Apr 2, 2025",
-    careManager: "Dr. Mark Johnson",
-  },
-  {
-    id: "3",
-    name: "Michael Chen",
-    age: 56,
-    disability: "Hearing Loss",
-    status: "Active",
-    lastVisit: "Mar 30, 2025",
-    careManager: "Dr. Rebecca Chen",
-  },
-  {
-    id: "4",
-    name: "Emma Rodriguez",
-    age: 16,
-    disability: "Developmental Disability",
-    status: "New",
-    lastVisit: "Apr 8, 2025",
-    careManager: "Dr. Rebecca Chen",
-  },
-  {
-    id: "5",
-    name: "David Thompson",
-    age: 61,
-    disability: "Mobility Impairment",
-    status: "Inactive",
-    lastVisit: "Feb 12, 2025",
-    careManager: "Dr. Mark Johnson",
-  },
-  {
-    id: "6",
-    name: "Lisa Williams",
-    age: 42,
-    disability: "Multiple Sclerosis",
-    status: "Active",
-    lastVisit: "Mar 25, 2025",
-    careManager: "Dr. Jennifer Lee",
-  },
-  {
-    id: "7",
-    name: "Robert Garcia",
-    age: 55,
-    disability: "Chronic Pain",
-    status: "Active",
-    lastVisit: "Apr 1, 2025",
-    careManager: "Dr. Jennifer Lee",
-  },
-  {
-    id: "8",
-    name: "Michelle Kim",
-    age: 37,
-    disability: "Cerebral Palsy",
-    status: "Active",
-    lastVisit: "Mar 28, 2025",
-    careManager: "Dr. Mark Johnson",
-  },
-  {
-    id: "9",
-    name: "Tommy Anderson",
-    age: 12,
-    disability: "Autism Spectrum Disorder",
-    status: "Active",
-    lastVisit: "Apr 3, 2025",
-    careManager: "Dr. Rebecca Chen",
-  },
-  {
-    id: "10",
-    name: "Jessica Brown",
-    age: 28,
-    disability: "Spinal Cord Injury",
-    status: "Inactive",
-    lastVisit: "Jan 15, 2025",
-    careManager: "Dr. Mark Johnson",
-  },
-  {
-    id: "11",
-    name: "Alex Turner",
-    age: 15,
-    disability: "ADHD",
-    status: "Active",
-    lastVisit: "Apr 6, 2025",
-    careManager: "Dr. Jennifer Lee",
-  },
-  {
-    id: "12",
-    name: "Maria Santos",
-    age: 48,
-    disability: "Fibromyalgia",
-    status: "New",
-    lastVisit: "Apr 9, 2025",
-    careManager: "Dr. Rebecca Chen",
-  },
-  {
-    id: "13",
-    name: "Kevin Lee",
-    age: 35,
-    disability: "Depression",
-    status: "Active",
-    lastVisit: "Apr 4, 2025",
-    careManager: "Dr. Mark Johnson",
-  },
-  {
-    id: "14",
-    name: "Sophie Miller",
-    age: 14,
-    disability: "Learning Disability",
-    status: "Active",
-    lastVisit: "Apr 7, 2025",
-    careManager: "Dr. Jennifer Lee",
-  },
-  {
-    id: "15",
-    name: "Daniel White",
-    age: 52,
-    disability: "Bipolar Disorder",
-    status: "Inactive",
-    lastVisit: "Dec 20, 2024",
-    careManager: "Dr. Rebecca Chen",
-  },
-];
+import { SkeletonRow } from "@/components/layout/SkeletonRow";
 
 export default function ClientsPage() {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const [clients, setClients] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [ageFilter, setAgeFilter] = useState("All");
@@ -209,7 +72,7 @@ export default function ClientsPage() {
     const token = localStorage.getItem("accessToken");
     if (!token) return;
 
-    // setLoading(true);
+    setLoading(true);
     try {
       const data = await getClients(token, {
         searchQuery,
@@ -225,7 +88,7 @@ export default function ClientsPage() {
     } catch (err) {
       console.error("Error fetching clients:", err);
     } finally {
-      // setLoading(false);
+      setLoading(false);
     }
   };
   useEffect(() => {
@@ -251,7 +114,7 @@ export default function ClientsPage() {
       status: "New",
       lastVisit: new Date().toLocaleDateString("en-US", {
         month: "short",
-        
+
         year: "numeric",
       }),
       careManager: newClient.careManager,
@@ -328,7 +191,7 @@ export default function ClientsPage() {
     router.push("/crm/clients/new");
   };
 
-   function calculateAge(dob: string | Date): number {
+  function calculateAge(dob: string | Date): number {
     const birthDate = new Date(dob);
     const today = new Date();
 
@@ -359,7 +222,7 @@ export default function ClientsPage() {
       </PageHeader>
 
       <Card>
-        <CardContent className="p-6">
+        <CardContent className="p-6 px-2">
           <div className="flex flex-col space-y-4">
             {/* Search and Filters */}
             <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
@@ -401,10 +264,10 @@ export default function ClientsPage() {
                     <SelectItem value="inactive">Inactive</SelectItem>
                   </SelectContent>
                 </Select>
-                <Button variant="outline" size="sm">
+                {/* <Button variant="outline" size="sm">
                   <Filter className="mr-2 h-4 w-4" />
                   Filter
-                </Button>
+                </Button> */}
               </div>
             </div>
 
@@ -429,69 +292,74 @@ export default function ClientsPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {currentClients?.map((client) => (
-                    <TableRow key={client.id}>
-                      <TableCell className="font-medium">
-                        {client.firstName} {client.lastName}
-                      </TableCell>
-                      <TableCell>{calculateAge(client.dob)}</TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        {client.phone}
-                      </TableCell>
-                      <TableCell>
-                        <Badge
-                          variant={
-                            client.status === "active"
-                              ? "default"
-                              : client.status === "New"
-                              ? "secondary"
-                              : "outline"
-                          }
-                        >
-                          {client.status === 'active' && "Active"}
-                          {client.status === 'inactive' && "Inactive"}
-                        </Badge>
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        {client.email}
-                      </TableCell>
-                      <TableCell className="hidden lg:table-cell">
-                        {client.careManager}
-                      </TableCell>
-                      <TableCell>
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" size="icon">
-                              <MoreVertical className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem
-                              onClick={() =>
-                                router.push(`/crm/clients/${client.id}`)
+                  {loading
+                    ? // Render 5 skeleton rows
+                      Array.from({ length: 5 }).map((_, i) => (
+                        <SkeletonRow key={i} />
+                      ))
+                    : currentClients?.map((client) => (
+                        <TableRow key={client.id}>
+                          <TableCell className="font-medium">
+                            {client.firstName} {client.lastName}
+                          </TableCell>
+                          <TableCell>{calculateAge(client.dob)}</TableCell>
+                          <TableCell className="hidden md:table-cell">
+                            {client.phone}
+                          </TableCell>
+                          <TableCell>
+                            <Badge
+                              variant={
+                                client.status === "active"
+                                  ? "default"
+                                  : client.status === "New"
+                                  ? "secondary"
+                                  : "outline"
                               }
                             >
-                              <ExternalLink className="mr-2 h-4 w-4" />
-                              View Details
-                            </DropdownMenuItem>
-                            <DropdownMenuItem
-                              className="text-destructive"
-                              onClick={() => handleDeleteClient(client.id)}
-                            >
-                              <Trash2 className="mr-2 h-4 w-4" />
-                              Delete
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  ))}
+                              {client.status === "active" && "Active"}
+                              {client.status === "inactive" && "Inactive"}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="hidden md:table-cell">
+                            {client.email}
+                          </TableCell>
+                          <TableCell className="hidden lg:table-cell">
+                            {client.careManager}
+                          </TableCell>
+                          <TableCell>
+                            <DropdownMenu>
+                              <DropdownMenuTrigger asChild>
+                                <Button variant="ghost" size="icon">
+                                  <MoreVertical className="h-4 w-4" />
+                                </Button>
+                              </DropdownMenuTrigger>
+                              <DropdownMenuContent align="end">
+                                <DropdownMenuItem
+                                  onClick={() =>
+                                    router.push(`/crm/clients/${client.id}`)
+                                  }
+                                >
+                                  <ExternalLink className="mr-2 h-4 w-4" />
+                                  View Details
+                                </DropdownMenuItem>
+                                <DropdownMenuItem
+                                  className="text-destructive"
+                                  onClick={() => handleDeleteClient(client.id)}
+                                >
+                                  <Trash2 className="mr-2 h-4 w-4" />
+                                  Delete
+                                </DropdownMenuItem>
+                              </DropdownMenuContent>
+                            </DropdownMenu>
+                          </TableCell>
+                        </TableRow>
+                      ))}
                 </TableBody>
               </Table>
             </div>
 
             {/* Pagination */}
-            <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+            <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0 mt-2">
               <div className="flex items-center space-x-2 text-sm text-muted-foreground">
                 <span>
                   Showing {startIndex + 1} to{" "}

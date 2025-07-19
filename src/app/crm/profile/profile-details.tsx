@@ -327,14 +327,17 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
   }, [previewUrl]);
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
+      <div className="md:flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">My Profile</h1>
-          <p className="text-muted-foreground">
+          <p className="text-muted-foreground text-sm">
             Manage your account settings and preferences
           </p>
         </div>
-        <Button onClick={() => setIsEditing(!isEditing)}>
+        <Button
+          onClick={() => setIsEditing(!isEditing)}
+          className="mt-2 md:mt-0"
+        >
           {isEditing ? (
             <>
               <X className="mr-2 h-4 w-4" />
@@ -350,11 +353,11 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
       </div>
 
       <Tabs defaultValue="personal" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="flex items-center justify-between w-full">
           <TabsTrigger value="personal">Personal Info</TabsTrigger>
           <TabsTrigger value="professional">Professional</TabsTrigger>
           <TabsTrigger value="security">Security</TabsTrigger>
-          <TabsTrigger value="preferences">Preferences</TabsTrigger>
+          {/* <TabsTrigger value="preferences">Preferences</TabsTrigger> */}
         </TabsList>
 
         <TabsContent value="personal" className="space-y-6">
@@ -366,7 +369,7 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
               <CardContent className="space-y-6">
                 <div className="flex flex-col items-center gap-4">
                   <div className="relative">
-                    <Avatar className="h-24 w-24">
+                    <Avatar className="h-20 w-20">
                       <AvatarImage
                         src={
                           previewUrl
@@ -375,7 +378,7 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
                               "/default-avatar.png"
                         }
                       />{" "}
-                      <AvatarFallback className="text-lg">
+                      <AvatarFallback className="text-lg w-full">
                         {editedProfile?.firstName[0]}
                         {editedProfile?.lastName[0]}
                       </AvatarFallback>
@@ -527,10 +530,10 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
               <CardHeader>
                 <CardTitle>Account Status</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-4 mt-3">
                 <div className="grid gap-2">
-                  <Label>Joined Date</Label>
-                  <div className="flex items-center gap-2">
+                  {/* <Label>Joined Date</Label> */}
+                  <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
                       <CalendarIcon className="h-4 w-4 text-muted-foreground" />
                       <span className="text-sm">Date Joined</span>
@@ -561,7 +564,7 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
                         </PopoverContent>
                       </Popover>
                     ) : (
-                      <span className="font-medium">
+                      <span className="font-medium text-sm">
                         {formatDateTime(editedProfile.joinedDate)}
                       </span>
                     )}
@@ -579,7 +582,7 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
                     <span className="text-sm">Last Login</span>
                   </div>
                   <div className="text-right">
-                    <div className="font-medium">
+                    <div className="font-medium text-sm">
                       {formatDateTime(editedProfile.lastLogin)}
                     </div>
                     {/* <div className="text-xs text-muted-foreground">
