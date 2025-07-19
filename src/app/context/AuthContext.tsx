@@ -59,6 +59,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setAccessToken(accessToken);
       setUser(user);
       localStorage.setItem("accessToken", accessToken);
+      console.log("Redirecting to /crm...")
       router.push("/crm");
     } catch (err: any) {
       console.error("Login error:", err);
@@ -75,7 +76,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(null);
       setAccessToken(null);
       localStorage.removeItem("accessToken");
-      router.push("/crm/login");
+      router.push("/login");
     }
   };
 
