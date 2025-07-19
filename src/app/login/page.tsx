@@ -38,7 +38,7 @@ export default function LoginPage() {
         { email, password },
         { withCredentials: true }
       );
-      console.log("Login response:", res.data);
+      // console.log("Login response:", res.data);
       const { user, accessToken } = res.data.data;
 
       await login(user, accessToken); // update context

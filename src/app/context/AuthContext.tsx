@@ -8,7 +8,8 @@ import React, {
   ReactNode,
 } from "react";
 import axios from "../lib/axios";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { toast } from "sonner"; // Optional: if you're using toast
 
 type User = {
   id: string;
@@ -22,10 +23,13 @@ type User = {
 type AuthContextType = {
   user: User | null;
   accessToken: string | null;
-  login: (email: string, password: string) => Promise<void>;
+  login: (user: User, accessToken: string) => Promise<void>;
   logout: () => Promise<void>;
-  updateUser: (updates: Partial<User>) => Promise<void>; // 👈 ADD THIS
-  changePassword: (passwords: any) => Promise<void>; // 👈 ADD THIS
+  updateUser: (updates: Partial<User>) => Promise<void>;
+  changePassword: (passwords: {
+    currentPassword: string;
+    newPassword: string;
+  }) => Promise<void>;
   loading: boolean;
 };
 
@@ -33,66 +37,55 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const router = useRouter();
-
+  const pathname = usePathname();
   const [user, setUser] = useState<User | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const fetchUser = async (token) => {
-    console.log("Fetching user with accessToken:", token);
+  const fetchUser = async (token: string) => {
     if (!token) return;
     try {
       const res = await axios.get("auth/me", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUser(res.data);
-      console.log("User fetched successfully:", res.data);
     } catch (err) {
+      console.error("Failed to fetch user:", err);
       setUser(null);
     }
   };
-
-  const login = async (user: any, accessToken: any) => {
-    console.log("Attempting login with:", { user, accessToken });
+  const login = async (user: User, accessToken: string) => {
     try {
-      // const res = await axios.post('/auth/login', { email, password });
-      // console.log('Login response:', res.data);
-      // setAccessToken(res.data.accessToken);
-      // setUser(res.data.user);
       setAccessToken(accessToken);
       setUser(user);
       localStorage.setItem("accessToken", accessToken);
       router.push("/crm");
     } catch (err: any) {
-      throw new Error(err?.response?.data?.message || "Login failed");
+      console.error("Login error:", err);
+      throw new Error("Login failed");
     }
   };
 
   const logout = async () => {
     try {
       await axios.post("/auth/logout");
+    } catch (err) {
+      console.warn("Logout request failed:", err);
+    } finally {
       setUser(null);
       setAccessToken(null);
-      localStorage.removeItem("accessToken"); // ✅
-      router.push("/login");
-    } catch (err) {
-      console.error("Logout failed:", err);
+      localStorage.removeItem("accessToken");
+      router.push("/crm/login");
     }
   };
 
   const updateUser = async (updates: Partial<User>) => {
-    if (!accessToken) {
-      throw new Error("No access token available");
-    }
+    if (!accessToken) throw new Error("No access token");
 
     try {
       const res = await axios.put("/auth/profile", updates, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+        headers: { Authorization: `Bearer ${accessToken}` },
       });
-
-      // Update the user state with the latest data
       setUser(res.data.user);
     } catch (err) {
       console.error("Update user failed:", err);
@@ -104,32 +97,34 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     currentPassword: string;
     newPassword: string;
   }) => {
-    if (!accessToken) {
-      throw new Error("No access token available");
-    }
+    if (!accessToken) throw new Error("No access token");
 
     try {
       const res = await axios.post("/auth/change-password", passwords, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+        headers: { Authorization: `Bearer ${accessToken}` },
       });
-
       return res.data;
     } catch (err) {
       console.error("Change password failed:", err);
       throw new Error("Failed to change password");
     }
   };
-  useEffect(() => {
-    const tryRefresh = async () => {
-      const token = localStorage.getItem("accessToken");
-      console.log("New Checking localStorage for accessToken:", token);
 
-      if (token) {
-        setAccessToken(token);
+  useEffect(() => {
+    const publicRoutes = ["/crm/login", "/reset-password"];
+
+    if (publicRoutes.includes(pathname) || user) {
+      setLoading(false);
+      return;
+    }
+
+    const tryRefresh = async () => {
+      const storedToken = localStorage.getItem("accessToken");
+
+      if (storedToken) {
+        setAccessToken(storedToken);
+        await fetchUser(storedToken);
         setLoading(false);
-        await fetchUser(token); // optional if needed at this point
         return;
       }
 
@@ -139,31 +134,39 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           {},
           { withCredentials: true }
         );
-        const newToken = res.data.data.accessToken;
 
-        setAccessToken(newToken);
-        localStorage.setItem("accessToken", newToken);
-        await fetchUser(newToken);
-      } catch (err) {
-        console.error("Refresh failed:", err);
+        const newToken = res.data?.data?.accessToken;
+
+        if (newToken) {
+          setAccessToken(newToken);
+          localStorage.setItem("accessToken", newToken);
+          await fetchUser(newToken);
+        } else {
+          throw new Error("No token returned");
+        }
+      } catch (err: any) {
+        console.error("Refresh token error:", err?.response || err);
         setUser(null);
+        localStorage.removeItem("accessToken");
+        router.push("/crm/login");
+        toast?.error?.("Session expired. Please login again.");
       } finally {
         setLoading(false);
       }
     };
 
     tryRefresh();
-  }, []);
+  }, [pathname]);
 
   return (
     <AuthContext.Provider
       value={{
         user,
         accessToken,
-        updateUser,
-        changePassword,
         login,
         logout,
+        updateUser,
+        changePassword,
         loading,
       }}
     >
