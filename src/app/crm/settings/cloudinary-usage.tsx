@@ -74,7 +74,9 @@ export function CloudinaryUsage() {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch("https://primebackend.onrender.com/api/cloudinary");
+        const response = await fetch(
+          "https://primebackend.onrender.com/api/cloudinary"
+        );
         if (!response.ok) {
           throw new Error("Failed to fetch Cloudinary usage");
         }
@@ -120,7 +122,9 @@ export function CloudinaryUsage() {
   const handleRefresh = async () => {
     setIsRefreshing(true);
     try {
-      const response = await fetch("http://localhost:3000/api/cloudinary");
+      const response = await fetch(
+        "https://primebackend.onrender.com/api/cloudinary"
+      );
       if (!response.ok) {
         throw new Error("Failed to refresh Cloudinary usage");
       }

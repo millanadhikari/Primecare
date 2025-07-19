@@ -53,7 +53,10 @@ function SidebarLink({ href, icon, label, isCollapsed }: SidebarLinkProps) {
         <TooltipTrigger asChild>
           <Link
             href={href}
-            className={cn("flex h-10 w-10 items-center justify-center", activeClass)}
+            className={cn(
+              "flex h-10 w-10 items-center justify-center",
+              activeClass
+            )}
           >
             {icon}
           </Link>
@@ -96,7 +99,9 @@ function NavGroup({
           />
         </button>
       )}
-      <div className={cn("space-y-1", isOpen ? "block" : "hidden")}>{children}</div>
+      <div className={cn("space-y-1", isOpen ? "block" : "hidden")}>
+        {children}
+      </div>
     </div>
   );
 }
@@ -111,8 +116,12 @@ export function Sidebar({ isCollapsed, onCollapse }: SidebarProps) {
   const { user, logout } = useAuth();
   const router = useRouter();
 
-  const initials = `${user?.data?.user?.firstName?.[0] ?? ""}${user?.data?.user?.lastName?.[0] ?? ""}`;
-
+  const initials = `${user?.data?.user?.firstName?.[0] ?? ""}${
+    user?.data?.user?.lastName?.[0] ?? ""
+  }`;
+  if (!user) return null;
+  const isAdmin = user?.data?.user?.role === "ADMIN";
+  const isCoordinator = user?.data?.user?.role === "COORDINATOR";
   return (
     <>
       {/* Mobile toggle button */}
@@ -147,7 +156,7 @@ export function Sidebar({ isCollapsed, onCollapse }: SidebarProps) {
           {!isCollapsed && (
             <Link href="/" className="flex items-center gap-2 font-semibold">
               <AccessibilityIcon className="h-6 w-6 text-primary" />
-              <span>PrimeCare Plus</span>
+              <span>PrimeCare Plus </span>
             </Link>
           )}
           <div className="flex items-center gap-2">
@@ -173,30 +182,100 @@ export function Sidebar({ isCollapsed, onCollapse }: SidebarProps) {
         {/* Nav */}
         <div className="flex-1 overflow-y-auto py-2">
           <nav className="flex flex-col gap-1 px-2">
-            <SidebarLink href="/crm" icon={<Home className="h-5 w-5" />} label="Dashboard" isCollapsed={isCollapsed} />
-            <SidebarLink href="/crm/clients" icon={<Users className="h-5 w-5" />} label="Clients" isCollapsed={isCollapsed} />
-            <SidebarLink href="/appointments" icon={<Calendar className="h-5 w-5" />} label="Appointments" isCollapsed={isCollapsed} />
-            <SidebarLink href="/records" icon={<ClipboardList className="h-5 w-5" />} label="Medical Records" isCollapsed={isCollapsed} />
-            <SidebarLink href="/analytics" icon={<PieChart className="h-5 w-5" />} label="Analytics" isCollapsed={isCollapsed} />
-            <NavGroup title="Administration" isCollapsed={isCollapsed}>
-              <SidebarLink href="/crm/staff" icon={<Users className="h-5 w-5" />} label="Staff Directory" isCollapsed={isCollapsed} />
-              <SidebarLink href="/crm/documents" icon={<FileText className="h-5 w-5" />} label="Documents" isCollapsed={isCollapsed} />
-              <SidebarLink href="/crm/blogs" icon={<BookOpen className="h-5 w-5" />} label="Blog Management" isCollapsed={isCollapsed} />
-              <SidebarLink href="/crm/messages" icon={<MessageSquare className="h-5 w-5" />} label="Messages" isCollapsed={isCollapsed} />
-            </NavGroup>
-            <NavGroup title="System" isCollapsed={isCollapsed}>
-              <SidebarLink href="/crm/settings" icon={<Settings className="h-5 w-5" />} label="Settings" isCollapsed={isCollapsed} />
-              <SidebarLink href="/activity" icon={<Activity className="h-5 w-5" />} label="Activity Log" isCollapsed={isCollapsed} />
-            </NavGroup>
+            <SidebarLink
+              href="/crm"
+              icon={<Home className="h-5 w-5" />}
+              label="Dashboard"
+              isCollapsed={isCollapsed}
+            />
+            <SidebarLink
+              href="/crm/clients"
+              icon={<Users className="h-5 w-5" />}
+              label="Clients"
+              isCollapsed={isCollapsed}
+            />
+            <SidebarLink
+              href="/appointments"
+              icon={<Calendar className="h-5 w-5" />}
+              label="Appointments"
+              isCollapsed={isCollapsed}
+            />
+            <SidebarLink
+              href="/records"
+              icon={<ClipboardList className="h-5 w-5" />}
+              label="Medical Records"
+              isCollapsed={isCollapsed}
+            />
+            <SidebarLink
+              href="/analytics"
+              icon={<PieChart className="h-5 w-5" />}
+              label="Analytics"
+              isCollapsed={isCollapsed}
+            />
+            {(isAdmin ) && (
+              <span>
+                <NavGroup title="Administration" isCollapsed={isCollapsed}>
+                  <SidebarLink
+                    href="/crm/staff"
+                    icon={<Users className="h-5 w-5" />}
+                    label="Staff Directory"
+                    isCollapsed={isCollapsed}
+                  />
+                  <SidebarLink
+                    href="/crm/documents"
+                    icon={<FileText className="h-5 w-5" />}
+                    label="Documents"
+                    isCollapsed={isCollapsed}
+                  />
+                  <SidebarLink
+                    href="/crm/blogs"
+                    icon={<BookOpen className="h-5 w-5" />}
+                    label="Blog Management"
+                    isCollapsed={isCollapsed}
+                  />
+                  <SidebarLink
+                    href="/crm/messages"
+                    icon={<MessageSquare className="h-5 w-5" />}
+                    label="Messages"
+                    isCollapsed={isCollapsed}
+                  />
+                </NavGroup>
+                <NavGroup title="System" isCollapsed={isCollapsed}>
+                  <SidebarLink
+                    href="/crm/settings"
+                    icon={<Settings className="h-5 w-5" />}
+                    label="Settings"
+                    isCollapsed={isCollapsed}
+                  />
+                  <SidebarLink
+                    href="/activity"
+                    icon={<Activity className="h-5 w-5" />}
+                    label="Activity Log"
+                    isCollapsed={isCollapsed}
+                  />
+                </NavGroup>
+              </span>
+            )}
           </nav>
         </div>
 
         {/* Footer */}
-        <div className="border-t p-4 hover:bg-muted cursor-pointer" onClick={() => router.push("/crm/profile")}>
-          <div className={cn("flex items-center gap-3", isCollapsed ? "justify-center" : "")}>
+        <div
+          className="border-t p-4 hover:bg-muted cursor-pointer"
+          onClick={() => router.push("/crm/profile")}
+        >
+          <div
+            className={cn(
+              "flex items-center gap-3",
+              isCollapsed ? "justify-center" : ""
+            )}
+          >
             <Avatar className="h-10 w-10 rounded-full">
               <AvatarImage
-                src={user?.data?.user.profileImage ?? "https://via.placeholder.com/150"}
+                src={
+                  user?.data?.user.profileImage ??
+                  "https://via.placeholder.com/150"
+                }
               />
               <AvatarFallback>{initials}</AvatarFallback>
             </Avatar>
@@ -205,7 +284,9 @@ export function Sidebar({ isCollapsed, onCollapse }: SidebarProps) {
                 <div className="text-sm font-medium">
                   {user?.data?.user.firstName} {user?.data?.user.lastName}
                 </div>
-                <div className="text-xs text-muted-foreground">Medical Director</div>
+                <div className="text-xs text-muted-foreground">
+                  Medical Director
+                </div>
               </div>
             )}
           </div>

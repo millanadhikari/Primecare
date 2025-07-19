@@ -128,7 +128,7 @@ export function StaffDetails({ staffMember }: StaffDetailsProps) {
   const [isEditingCompliance, setIsEditingCompliance] = useState(false);
   const [isEditingKin, setIsEditingKin] = useState(false);
   const [isEditingEmergency, setIsEditingEmergency] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
   const parsedDob = staffData?.dob ? new Date(staffData?.dob) : null;
   const [selectedDob, setSelectedDob] = useState<Date | undefined>(
     parsedDob || undefined
@@ -178,6 +178,7 @@ export function StaffDetails({ staffMember }: StaffDetailsProps) {
 
       languageSpoken: staffData.languageSpoken,
     };
+    setIsLoading(true);
     // setStaffData(updatedData);
     try {
       const token = localStorage.getItem("accessToken");
@@ -186,6 +187,7 @@ export function StaffDetails({ staffMember }: StaffDetailsProps) {
       setStaffData(refreshedClient);
       setIsEditingDemographic(false);
       toast.success("Demographic details updated successfully");
+      setIsLoading(false);
     } catch (err) {
       console.error(err);
       toast.error("Failed to update demographic details");
@@ -198,6 +200,7 @@ export function StaffDetails({ staffMember }: StaffDetailsProps) {
   };
 
   const handleSaveSettings = async () => {
+    setIsLoading(true);
     try {
       const updatedData = {
         isActive: staffData.isActive,
@@ -212,6 +215,7 @@ export function StaffDetails({ staffMember }: StaffDetailsProps) {
 
       setIsEditingSettings(false);
       toast.success("Settings updated successfully");
+      setIsLoading(false);
     } catch (err) {
       console.error(err);
       toast.error("Failed to update settings");
@@ -219,6 +223,7 @@ export function StaffDetails({ staffMember }: StaffDetailsProps) {
   };
 
   const handleSaveKin = async () => {
+    setIsLoading(true);
     try {
       const updatedData = {
         kinName: staffData.kinName,
@@ -232,10 +237,11 @@ export function StaffDetails({ staffMember }: StaffDetailsProps) {
 
       const refreshedClient = await getStaffById(staffData.id, token);
       setStaffData(refreshedClient);
-      console.log(refreshedClient)
+      console.log(refreshedClient);
 
       setIsEditingKin(false);
       toast.success("Next of Kin updated successfully");
+      setIsLoading(false);
     } catch (err) {
       console.error(err);
       toast.error("Failed to update settings");
@@ -256,21 +262,23 @@ export function StaffDetails({ staffMember }: StaffDetailsProps) {
       toast.error("Password must be at least 8 characters long");
       return;
     }
-    // try {
-    //   const token = localStorage.getItem("accessToken");
-    //   await updateStaffById(staffData.id, passwordData, token!);
-    //   const refreshedClient = await getStaffById(staffData.id, token);
-    //   setStaffData(refreshedClient);
+    setIsLoading(true);
+    try {
+      const token = localStorage.getItem("accessToken");
+      await updateStaffById(staffData.id, passwordData, token!);
+      const refreshedClient = await getStaffById(staffData.id, token);
+      setStaffData(refreshedClient);
 
-    //   toast.success("Password updated successfully");
-    //   setPasswordData({
-    //     newPassword: "",
-    //     confirmPassword: "",
-    //   });
-    // } catch (err) {
-    //   console.error(err);
-    //   toast.error("Failed to update demographic details");
-    // }
+      toast.success("Password updated successfully");
+      setPasswordData({
+        newPassword: "",
+        confirmPassword: "",
+      });
+      setIsLoading(false);
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to update demographic details");
+    }
   };
 
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -328,21 +336,26 @@ export function StaffDetails({ staffMember }: StaffDetailsProps) {
       </div>
 
       {/* Profile Section */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+      <div className="md:flex items-center justify-between">
+        <div className="flex items-center gap-4 pb-4">
           <Avatar className="h-16 w-16">
             <AvatarImage src={staffData.profileImage || ""} />
-            <AvatarFallback className="text-lg">
+            <AvatarFallback className="text-lg bg-gray-100 rounded-full w-full">
               {staffData.firstName[0]}
               {staffData.lastName[0]}
             </AvatarFallback>
           </Avatar>
-          <div>
+          <div className="flex flex-col gap-1">
             <h1 className="text-2xl font-bold">
               {staffData.firstName} {staffData.lastName}
             </h1>
-            <p className="text-muted-foreground">Staff ID: {staffData.id}</p>
-            <Badge variant={staffData.isActive ? "default" : "secondary"}>
+            <p className="text-muted-foreground text-sm">
+              Staff ID: {staffData.id}
+            </p>
+            <Badge
+              className="w-14"
+              variant={staffData.isActive ? "default" : "secondary"}
+            >
               {staffData.isActive ? "Active" : "Inactive"}
             </Badge>
           </div>
@@ -389,7 +402,7 @@ export function StaffDetails({ staffMember }: StaffDetailsProps) {
                 <div className="relative">
                   <Avatar className="h-24 w-24">
                     <AvatarImage src={staffData?.profileImage || ""} />
-                    <AvatarFallback className="text-lg">
+                    <AvatarFallback className="text-lg w-full">
                       {staffData?.firstName[0]}
                       {staffData?.lastName[0]}
                     </AvatarFallback>
@@ -519,7 +532,7 @@ export function StaffDetails({ staffMember }: StaffDetailsProps) {
           {isEditingDemographic && (
             <Button onClick={handleSaveDemographic} className="w-fit">
               <Save className="mr-2 h-4 w-4" />
-              Update
+              {isLoading ? "Updating" : "Update"}
             </Button>
           )}
         </CardContent>
@@ -625,7 +638,7 @@ export function StaffDetails({ staffMember }: StaffDetailsProps) {
                 </div>
                 <Button onClick={handlePasswordChange} className="w-fit">
                   <Key className="mr-2 h-4 w-4" />
-                  Update Password
+                  {isLoading ? "Updating Password" : "Update Password"}
                 </Button>
               </div>
             )}
@@ -661,7 +674,7 @@ export function StaffDetails({ staffMember }: StaffDetailsProps) {
             <div className="grid gap-2">
               <Label>Status</Label>
               <Select
-                value={staffData.isActive ? "Active" : "Inactive"}
+                value={staffData?.isActive ? "Active" : "Inactive"}
                 onValueChange={(value) =>
                   setStaffData({ ...staffData, isActive: value === "Active" })
                 }
@@ -679,7 +692,7 @@ export function StaffDetails({ staffMember }: StaffDetailsProps) {
             <div className="grid gap-2">
               <Label>Role</Label>
               <Select
-                value={staffData.role}
+                value={staffData?.role}
                 onValueChange={(value) =>
                   setStaffData({ ...staffData, role: value })
                 }
@@ -698,7 +711,7 @@ export function StaffDetails({ staffMember }: StaffDetailsProps) {
             <div className="grid gap-2 md:col-span-2">
               <Label>Job Title</Label>
               <Input
-                value={staffData.specialization}
+                value={staffData?.specialization}
                 onChange={(e) =>
                   setStaffData({ ...staffData, specialization: e.target.value })
                 }
@@ -710,7 +723,7 @@ export function StaffDetails({ staffMember }: StaffDetailsProps) {
           {isEditingSettings && (
             <Button onClick={handleSaveSettings} className="w-fit">
               <Save className="mr-2 h-4 w-4" />
-              Update
+              {isLoading ? "Updating Settings" : "Update"}
             </Button>
           )}
         </CardContent>
@@ -821,7 +834,7 @@ export function StaffDetails({ staffMember }: StaffDetailsProps) {
             <div className="grid gap-2">
               <Label>Name</Label>
               <Input
-                value={staffData?.kinName}
+                value={staffData?.kinName || ""}
                 onChange={(e) =>
                   setStaffData({ ...staffData, kinName: e.target.value })
                 }
@@ -831,7 +844,7 @@ export function StaffDetails({ staffMember }: StaffDetailsProps) {
             <div className="grid gap-2">
               <Label>Relation</Label>
               <Input
-                value={staffData.kinRelation}
+                value={staffData?.kinRelation || ""}
                 onChange={(e) =>
                   setStaffData({ ...staffData, kinRelation: e.target.value })
                 }
@@ -841,7 +854,7 @@ export function StaffDetails({ staffMember }: StaffDetailsProps) {
             <div className="grid gap-2">
               <Label>Contact</Label>
               <Input
-                value={staffData.kinPhone}
+                value={staffData?.kinPhone || ""}
                 onChange={(e) =>
                   setStaffData({ ...staffData, kinPhone: e.target.value })
                 }
@@ -851,7 +864,7 @@ export function StaffDetails({ staffMember }: StaffDetailsProps) {
             <div className="grid gap-2">
               <Label>Email</Label>
               <Input
-                value={staffData.kinEmail}
+                value={staffData?.kinEmail || ""}
                 onChange={(e) =>
                   setStaffData({ ...staffData, kinEmail: e.target.value })
                 }
@@ -862,7 +875,7 @@ export function StaffDetails({ staffMember }: StaffDetailsProps) {
           {isEditingKin && (
             <Button onClick={handleSaveKin} className="w-fit">
               <Save className="mr-2 h-4 w-4" />
-              Update
+              {isLoading ? "Updating Details" : "Update"}
             </Button>
           )}
         </CardContent>

@@ -588,7 +588,8 @@ export default function MessagesPage() {
                       Array.from({ length: 5 }).map((_, i) => (
                         <SkeletonRow key={i} />
                       ))
-                    : currentMessages?.map((message) => (
+                    :
+                     currentMessages?.map((message) => (
                         <TableRow
                           key={message.id}
                           className={`cursor-pointer transition-colors hover:bg-accent ${

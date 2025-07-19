@@ -42,7 +42,7 @@ const eslintConfig = [
       ],
       "react/no-unescaped-entities": "off",
 
-      // "@typescript-eslint/ban-types": [
+      // "@typescript-eslint/ban-tyFpes": [
       //   "error",
       //   {
       //     types: {

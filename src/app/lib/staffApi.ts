@@ -1,12 +1,12 @@
 const production =  'https://primebackend.onrender.com'
 
-const local =  'http://localhost:3000'
+// const production =  'http://localhost:3000'
 
 export async function createStaff(
   staffData: Record<string, any>,
   token: string
 ) {
-  const res = await fetch(`${production}/auth/signup`, {
+  const res = await fetch(`${production}/api/auth/signup`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,

@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import axios from "../lib/axios";
 import { useAuth } from "../context/AuthContext"; // Adjust the import path as necessary
+import { Spinner } from "@/components/ui/spinner";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -66,7 +67,7 @@ export default function LoginPage() {
           <CardDescription>
             Enter your credentials to access your account
           </CardDescription>
-          <div className="text-left text-xs text-red-500">
+          <div className="text-left text-[0.9em] text-red-500">
             {errorMsg && <p>* {errorMsg}</p>}
           </div>
         </CardHeader>
@@ -108,7 +109,13 @@ export default function LoginPage() {
               type="submit"
               disabled={isLoading}
             >
-              {isLoading ? "Signing in..." : "Sign in"}
+              {isLoading ? (
+                <div className="flex items-center gap-3">
+                  Signing in.. <Spinner className="text-white" />
+                </div>
+              ) : (
+                "Sign in"
+              )}
             </Button>
           </CardFooter>
         </form>

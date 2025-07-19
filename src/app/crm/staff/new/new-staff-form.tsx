@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils";
 import { ArrowLeft, CalendarIcon, Save, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { createStaff } from "@/app/lib/staffApi";
+import { Spinner } from "@/components/ui/spinner";
 
 interface NewStaffData {
   title: string;
@@ -155,7 +156,7 @@ export function NewStaffForm() {
       toast.success("Staff member created successfully");
 
       // Redirect to the newly created staff member's detail page
-        router.push(`/crm/staff/${newStaffId.data.user.id}`);
+      router.push(`/crm/staff/${newStaffId.data.user.id}`);
     } catch (error) {
       toast.error("Failed to create staff member. Please try again.");
       console.error("Error creating staff member:", error);
@@ -167,8 +168,8 @@ export function NewStaffForm() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-4">
+      <div className="md:flex items-center justify-between">
+        <div className="md:flex items-center gap-4">
           <Button variant="ghost" size="icon" onClick={handleCancel}>
             <ArrowLeft className="h-4 w-4" />
           </Button>
@@ -179,14 +180,20 @@ export function NewStaffForm() {
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="pt-4 md:pt-0 flex items-center gap-2">
           <Button variant="outline" onClick={handleCancel} disabled={isLoading}>
             <X className="mr-2 h-4 w-4" />
             Cancel
           </Button>
           <Button onClick={handleCreate} disabled={isLoading}>
             <Save className="mr-2 h-4 w-4" />
-            {isLoading ? "Creating..." : "Create Staff Member"}
+            {isLoading ? (
+              <div className="flex items-center justify-center gap-2">
+                Creating.. <Spinner className="text-white" />
+              </div>
+            ) : (
+              "Create Staff Member"
+            )}
           </Button>
         </div>
       </div>

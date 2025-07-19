@@ -1,4 +1,9 @@
 // lib/api.ts
+
+// const production =  'https://primebackend.onrender.com/api/client'
+
+const production = "http://localhost:3000/api/client";
+
 export async function getClients(
   token: string,
   {
@@ -24,15 +29,12 @@ export async function getClients(
   params.append("page", page.toString());
   params.append("limit", limit.toString());
 
-  const res = await fetch(
-    `http://localhost:3000/api/client?${params.toString()}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  const res = await fetch(`${production}?${params.toString()}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
 
   if (!res) throw new Error("Failed to fetch clients");
   console.log("Response status:", res);
@@ -40,7 +42,7 @@ export async function getClients(
 }
 
 export async function deleteClient(token: string, id: string) {
-  const res = await fetch(`http://localhost:3000/api/client/${id}`, {
+  const res = await fetch(`${production}/${id}`, {
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -57,7 +59,7 @@ export async function deleteClient(token: string, id: string) {
 }
 
 export async function getClientById(id: string, token: string) {
-  const res = await fetch(`http://localhost:3000/api/client/${id}`, {
+  const res = await fetch(`${production}/${id}`, {
     method: "GET",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -79,7 +81,7 @@ export async function updateClientById(
   updatedData: Record<string, any>,
   token: string
 ) {
-  const res = await fetch(`http://localhost:3000/api/client/${id}`, {
+  const res = await fetch(`${production}/${id}`, {
     method: "PUT",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -101,7 +103,7 @@ export async function createClient(
   clientData: Record<string, any>,
   token: string
 ) {
-  const res = await fetch(`http://localhost:3000/api/client/signup`, {
+  const res = await fetch(`${production}/signup`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,

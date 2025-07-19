@@ -144,7 +144,7 @@ export default function StaffDirectoryPage() {
       const matchesStatus =
         statusFilter === "All" ||
         (statusFilter === "Active" &&
-          (staff.status === "Active" || staff.status === "New")) ||
+          (staff.status == "Active" || staff.status === "New")) ||
         (statusFilter === "Inactive" && staff.status === "Inactive");
 
       return matchesSearch && matchesStatus;
@@ -212,12 +212,12 @@ export default function StaffDirectoryPage() {
       </PageHeader>
 
       <Card>
-        <CardContent className="p-6">
+        <CardContent className="p-6  px-2 ">
           <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
             <div className="flex w-full items-center space-x-2 sm:w-auto">
               <Input
                 placeholder="Search staff..."
-                className="w-full sm:w-[300px]"
+                className="w-full sm:w-[300px] placeholder:text-sm"
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
@@ -240,7 +240,7 @@ export default function StaffDirectoryPage() {
                   <SelectItem value="inactive">Inactive</SelectItem>
                 </SelectContent>
               </Select>
-              <Label className="text-sm font-medium">Joined Date</Label>
+              {/* <Label className="text-sm font-medium">Joined Date</Label>
               <Popover>
                 <PopoverTrigger asChild>
                   <Button
@@ -258,11 +258,11 @@ export default function StaffDirectoryPage() {
                     initialFocus
                   />
                 </PopoverContent>
-              </Popover>
-              <Button variant="outline" size="sm">
+              </Popover> */}
+              {/* <Button variant="outline" size="sm">
                 <Filter className="mr-2 h-4 w-4" />
                 Filter
-              </Button>
+              </Button> */}
             </div>
           </div>
 
@@ -327,14 +327,10 @@ export default function StaffDirectoryPage() {
                         <TableCell>
                           <Badge
                             variant={
-                              staffMember.isActive === true
-                                ? "default"
-                                : "outline"
+                              staffMember.isActive ? "default" : "outline"
                             }
                           >
-                            {staffMember.isActive === true
-                              ? "Active"
-                              : "Inactive"}
+                            {staffMember.isActive ? 'Active' : "Inactive"}
                           </Badge>
                         </TableCell>
                         <TableCell>
@@ -380,7 +376,7 @@ export default function StaffDirectoryPage() {
               </TableBody>
             </Table>
           </div>
-          <div className="flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
+          <div className="mt-3 flex flex-col space-y-4 sm:flex-row sm:items-center sm:justify-between sm:space-y-0">
             <div className="flex items-center space-x-2 text-sm text-muted-foreground">
               <span>
                 Showing {startIndex + 1} to{" "}
