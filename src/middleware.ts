@@ -19,7 +19,7 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get("refreshToken")?.value;
 
   if (!token) {
-    const loginUrl = new URL("/crm/login", request.url); // Fixed login path
+    const loginUrl = new URL("/login", request.url); // Fixed login path
     return NextResponse.redirect(loginUrl);
   }
 
