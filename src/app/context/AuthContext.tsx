@@ -59,8 +59,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setAccessToken(accessToken);
       setUser(user);
       localStorage.setItem("accessToken", accessToken);
-      console.log("Redirecting to /crm...")
+      console.log("Redirecting to /crm...");
+      await new Promise((resolve) => setTimeout(resolve, 100));
       router.push("/crm");
+      
     } catch (err: any) {
       console.error("Login error:", err);
       throw new Error("Login failed");
