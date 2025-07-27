@@ -54,6 +54,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(null);
     }
   };
+
   const login = async (user: User, accessToken: string) => {
     try {
       setAccessToken(accessToken);
@@ -71,7 +72,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = async () => {
     try {
-      await axios.post("/auth/logout", {}, {withCredentials:true});
+      await axios.post("/auth/logout", {}, { withCredentials: true });
     } catch (err) {
       console.warn("Logout request failed:", err);
     } finally {
@@ -114,7 +115,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   useEffect(() => {
-    const publicRoutes = ["/crm/login", "/reset-password"];
+    const publicRoutes = ["/login", "/reset-password"];
 
     if (publicRoutes.includes(pathname) || user) {
       setLoading(false);
@@ -151,7 +152,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.error("Refresh token error:", err?.response || err);
         setUser(null);
         localStorage.removeItem("accessToken");
-        router.push("/crm/login");
+        router.push("/login");
         toast?.error?.("Session expired. Please login again.");
       } finally {
         setLoading(false);

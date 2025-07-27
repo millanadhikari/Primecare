@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 const protectedPaths = ["/crm", "/clients"];
-const publicPaths = ["/crm/login", "/reset-password"];
+const publicPaths = ["/login", "/reset-password"];
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
