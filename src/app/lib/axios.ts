@@ -4,8 +4,8 @@ import axios, {
   AxiosResponse,
 } from "axios";
 
-const production = "https://primebackend.onrender.com/api";
-// const production = "http://localhost:3000/api";
+// const production = "https://primebackend.onrender.com/api";
+const production = "http://localhost:3000/api";
 
 const instance: AxiosInstance = axios.create({
   baseURL: 
@@ -17,22 +17,6 @@ const instance: AxiosInstance = axios.create({
     "Content-Type": "application/json",
   },
 });
-
-// // Optional: attach access token dynamically if needed
-// instance.interceptors.request.use(
-//   (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-//     // You can read token from cookies, localStorage, or context
-//     const token =
-//       typeof window !== "undefined"
-//         ? localStorage.getItem("accessToken")
-//         : null;
-//     if (token && config.headers) {
-//       config.headers.Authorization = `Bearer ${token}`;
-//     }
-//     return config;
-//   },
-//   (error) => Promise.reject(error)
-// );
 
 let isRefreshing = false;
 let failedQueue: any[] = [];
@@ -91,33 +75,5 @@ instance.interceptors.response.use(
   }
 );
 
-// Optional: handle errors globally
-// instance.interceptors.response.use(
-//   (response: AxiosResponse) => response,
-//   async (error) => {
-//     const originalRequest = error.config;
-
-//     // Example: handle 401 Unauthorized (expired access token)
-//     if (error.response?.status === 401 && !originalRequest._retry) {
-//       originalRequest._retry = true;
-//       try {
-//         const refreshRes = await instance.post('/auth/refresh-token');
-//         const newAccessToken = refreshRes.data.accessToken;
-
-//         if (newAccessToken) {
-//           localStorage.setItem('accessToken', newAccessToken);
-//           originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
-//           return instance(originalRequest);
-//         }
-//       } catch (refreshErr) {
-//         // Refresh failed, logout user if needed
-//         localStorage.removeItem('accessToken');
-//         return Promise.reject(refreshErr);
-//       }
-//     }
-
-//     return Promise.reject(error);
-//   }
-// );
 
 export default instance;

@@ -16,7 +16,8 @@ import { AccessibilityIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import axios from "../lib/axios";
+// import axios from "../lib/axios";
+import axios from 'axios'
 import { useAuth } from "../context/AuthContext"; // Adjust the import path as necessary
 import { Spinner } from "@/components/ui/spinner";
 
@@ -34,7 +35,8 @@ export default function LoginPage() {
 
     try {
       const res = await axios.post(
-        "/auth/login",
+        // "/auth/login",
+        "/api/proxy-login",
         { email, password },
         { withCredentials: true }
       );

@@ -19,6 +19,9 @@ export function middleware(request: NextRequest) {
   const token = request.cookies.get("refreshToken")?.value;
   console.log("Middleware check: pathname =", pathname, "| token =", token);
 
+  const allCookies = request.cookies.getAll();
+  console.log("All cookies in middleware:", allCookies);
+
   if (!token) {
     const loginUrl = new URL("/login", request.url); // Fixed login path
     return NextResponse.redirect(loginUrl);
@@ -27,7 +30,6 @@ export function middleware(request: NextRequest) {
   return NextResponse.next();
 }
 
-// Match all sub-paths under crm and clients
 export const config = {
-  matcher: ["/crm", "/clients/:path*"],
+  matcher: ["/crm", "/crm/:path*", "/clients", "/clients/:path*"],
 };
