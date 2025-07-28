@@ -4,14 +4,13 @@ import axios, {
   AxiosResponse,
 } from "axios";
 
-// const production = "https://primebackend.onrender.com/api";
-const production = "http://localhost:3000/api";
+const production = "https://primebackend.onrender.com/api";
+// const production = "http://localhost:3000/api";
 
 const instance: AxiosInstance = axios.create({
-  baseURL: 
-  // process.env.NEXT_PUBLIC_API_BASE_URL || 
-  production,
-  // "http://localhost:3000/api",
+  baseURL:  production,
+  // baseURL: "/api", // 👈 local proxy via Next.js rewrite
+
   withCredentials: true, // send cookies like refreshToken
   headers: {
     "Content-Type": "application/json",
@@ -74,6 +73,5 @@ instance.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
 
 export default instance;
