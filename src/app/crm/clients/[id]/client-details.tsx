@@ -67,13 +67,28 @@ import {
   Receipt,
   Users,
   Printer,
+  UserPlus,
+  ChevronsUpDown,
+  Check,
 } from "lucide-react";
 import { getClientById, updateClientById } from "@/app/lib/clientApi";
 import { v4 as uuidv4 } from "uuid"; // at the top of your file
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "@/components/ui/command";
+import { getStaffs } from "@/app/lib/staffApi";
 
 interface Team {
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
+  role: string;
+  email: string;
+  department: string;
 }
 
 interface Document {
@@ -131,6 +146,7 @@ interface ClientData {
   invoiceTravel: boolean;
   createdAt: string;
   updatedAt: string;
+  assignedUsers: [];
   teams: Team[];
   documents: Document[];
   forms: Document[];
@@ -139,6 +155,14 @@ interface ClientData {
 
 interface ClientDetailsProps {
   client: ClientData;
+}
+interface StaffMember {
+  id: string;
+  firstName: string;
+  lastName: string;
+  role: string;
+  email: string;
+  department?: string;
 }
 
 const PRODUCTION = "https://primebackend.onrender.com/api";
@@ -171,6 +195,7 @@ export function ClientDetails({ client }: ClientDetailsProps) {
     clientType: client?.clientType || "",
     teams: client?.teams || [],
     documents: client?.documents || [],
+    assignedUsers: client?.assignedUsers || [],
   });
 
   const [isEditingDemographic, setIsEditingDemographic] = useState(false);
@@ -183,6 +208,11 @@ export function ClientDetails({ client }: ClientDetailsProps) {
   );
   const [forms, setForms] = useState<Document[]>(client.forms || []);
   const [invoices, setInvoices] = useState<Document[]>([]);
+  const [teams, setTeams] = useState(client.assignedUsers || []);
+  const [isAssigningTeam, setIsAssigningTeam] = useState(false);
+  const [selectedStaff, setSelectedStaff] = useState<StaffMember | null>(null);
+  const [openStaffSelect, setOpenStaffSelect] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const [newContact, setNewContact] = useState<Contact>({
     id: "",
     title: "",
@@ -199,6 +229,8 @@ export function ClientDetails({ client }: ClientDetailsProps) {
     isBilling: false,
   });
   const [isAddingContact, setIsAddingContact] = useState(false);
+  const [staff, setStaff] = useState<StaffMember[]>(null);
+  const [clientDataBeforeEdit, setClientDataBeforeEdit] = useState(null);
 
   // Parse DOB if it exists
   const parsedDob = clientData?.dob ? new Date(clientData?.dob) : null;
@@ -206,6 +238,89 @@ export function ClientDetails({ client }: ClientDetailsProps) {
     parsedDob || undefined
   );
 
+  const availableStaff: StaffMember[] = [
+    {
+      id: "1",
+      name: "Dr. Rebecca Chen",
+      role: "Medical Director",
+      email: "rebecca.chen@medicare.com",
+      department: "Medical",
+    },
+    {
+      id: "2",
+      name: "Dr. Mark Johnson",
+      role: "Senior Physician",
+      email: "mark.johnson@medicare.com",
+      department: "Medical",
+    },
+    {
+      id: "3",
+      name: "Sarah Williams",
+      role: "Registered Nurse",
+      email: "sarah.williams@medicare.com",
+      department: "Nursing",
+    },
+    {
+      id: "4",
+      name: "Jennifer Martinez",
+      role: "Care Coordinator",
+      email: "jennifer.martinez@medicare.com",
+      department: "Care",
+    },
+    {
+      id: "5",
+      name: "Michael Thompson",
+      role: "Physical Therapist",
+      email: "michael.thompson@medicare.com",
+      department: "Therapy",
+    },
+    {
+      id: "6",
+      name: "Dr. Lisa Anderson",
+      role: "Psychologist",
+      email: "lisa.anderson@medicare.com",
+      department: "Mental Health",
+    },
+    {
+      id: "7",
+      name: "David Wilson",
+      role: "Social Worker",
+      email: "david.wilson@medicare.com",
+      department: "Social Services",
+    },
+    {
+      id: "8",
+      name: "Emma Davis",
+      role: "Occupational Therapist",
+      email: "emma.davis@medicare.com",
+      department: "Therapy",
+    },
+    {
+      id: "9",
+      name: "James Brown",
+      role: "Case Manager",
+      email: "james.brown@medicare.com",
+      department: "Case Management",
+    },
+    {
+      id: "10",
+      name: "Maria Garcia",
+      role: "Speech Therapist",
+      email: "maria.garcia@medicare.com",
+      department: "Therapy",
+    },
+  ];
+  const filteredStaff = staff?.filter((staff) => {
+    const isAlreadyAssigned = teams.some(
+      (team) => team.firstName === staff.firstName
+    );
+    const matchesSearch =
+      staff.firstName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      staff.lastName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      staff.role?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      staff.email?.toLowerCase().includes(searchQuery.toLowerCase());
+    return !isAlreadyAssigned && matchesSearch;
+  });
   const handleProfileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -314,6 +429,18 @@ export function ClientDetails({ client }: ClientDetailsProps) {
       toast.error("Client data not loaded yet");
       return;
     }
+    console.log("teams state:", teams);
+    const previousUserIds =
+      clientDataBeforeEdit?.assignedUsers?.map((u) => u.id) || [];
+    const currentUserIds = teams?.map((u: any) => u.id) || []; // now just an array of strings
+
+    const toConnect = currentUserIds
+      .filter((id) => !previousUserIds.includes(id))
+      .map((id) => ({ id }));
+
+    const toDisconnect = previousUserIds
+      .filter((id) => !currentUserIds.includes(id))
+      .map((id) => ({ id }));
 
     const updatedData = {
       ndisNumber: clientData.ndisNumber,
@@ -321,8 +448,9 @@ export function ClientDetails({ client }: ClientDetailsProps) {
       referenceNumber: clientData.referenceNumber,
       poNumber: clientData.poNumber,
       clientType: clientData.clientType,
-      teams: {
-        set: clientData.teams.map((team) => ({ id: team.id, name: team.name })),
+      assignedUsers: {
+        connect: toConnect,
+        disconnect: toDisconnect,
       },
       smsReminders: clientData.smsReminders,
       invoiceTravel: clientData.invoiceTravel,
@@ -331,7 +459,7 @@ export function ClientDetails({ client }: ClientDetailsProps) {
     try {
       const token = localStorage.getItem("accessToken");
       if (!token) throw new Error("No auth token");
-
+      console.log("toconnect", toConnect)
       // Update on backend
       await updateClientById(clientData.id, updatedData, token);
 
@@ -514,9 +642,61 @@ export function ClientDetails({ client }: ClientDetailsProps) {
     }
   };
 
+  const handleAssignStaff = () => {
+    if (!selectedStaff) {
+      toast.error("Please select a staff member");
+      return;
+    }
+
+    const newTeamMember: Team = {
+      id: selectedStaff.id,
+      firstName: selectedStaff.firstName,
+      lastName: selectedStaff.lastName,
+      role: selectedStaff.role,
+      email: selectedStaff.email,
+      department: selectedStaff.department || "General",
+    };
+
+    setTeams([...teams, newTeamMember]);
+    setSelectedStaff(null);
+    setSearchQuery("");
+    setIsAssigningTeam(false);
+    setOpenStaffSelect(false);
+    console.log("New team member:", teams);
+    toast.success(
+      `${selectedStaff.firstName} has been assigned to this client`
+    );
+  };
+
+  const handleRemoveTeamMember = (teamId: string) => {
+    const teamMember = teams.find((team) => team.id === teamId);
+    setTeams(teams.filter((team) => team.id !== teamId));
+    toast.success(`${teamMember?.firstName} has been removed from this client`);
+  };
   useEffect(() => {
-    console.log("Client data loaded:", clientData);
-  }, []);
+    const fetchStaff = async () => {
+      try {
+        const token = localStorage.getItem("accessToken");
+        if (!token) throw new Error("No auth token");
+
+        // Fetch staff members from your API
+        // Assuming you have a function getStaff that fetches staff data
+        const staffData = await getStaffs(token, { searchQuery });
+        console.log("Fetched staff data:", staffData);
+        setStaff(staffData?.data?.users);
+      } catch (err) {
+        console.error("Failed to fetch staff:", err);
+      }
+    };
+
+    fetchStaff();
+  }, [searchQuery]);
+  useEffect(() => {
+    if (clientData) {
+      setClientDataBeforeEdit(clientData); // Add this to your state
+    }
+  }, [clientData]);
+
   if (!clientData) return <p>Loading...</p>;
 
   return (
@@ -960,27 +1140,191 @@ export function ClientDetails({ client }: ClientDetailsProps) {
             </div>
             <div className="grid gap-2">
               <Label>Team</Label>
-              <Select
-                value={
-                  clientData.teams.length > 0 ? clientData.teams[0].name : ""
-                }
-                onValueChange={(value) => {
-                  // Update teams array with selected team
-                  const updatedTeams = [{ id: "1", name: value }];
-                  setClientData({ ...clientData, teams: updatedTeams });
-                }}
-                disabled={!isEditingSettings}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select team" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="Team Alpha">Team Alpha</SelectItem>
-                  <SelectItem value="Team Beta">Team Beta</SelectItem>
-                  <SelectItem value="Team Gamma">Team Gamma</SelectItem>
-                  <SelectItem value="Team Delta">Team Delta</SelectItem>
-                </SelectContent>
-              </Select>
+              <div className="space-y-3">
+                {/* Assigned Team Members */}
+                <div className="space-y-2">
+                  {teams.map((team) => (
+                    <div
+                      key={team.id}
+                      className="flex items-center justify-between p-3 border rounded-lg bg-muted/50"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                          <span className="text-sm font-medium text-primary">
+                            {team.firstName
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")}
+                            {team.lastName
+                              .split(" ")
+                              .map((n) => n[0])
+                              .join("")}
+                          </span>
+                        </div>
+                        <div>
+                          <p className="font-medium text-sm">
+                            {team.firstName} {team.lastName}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {team?.role}
+                          </p>
+                        </div>
+                      </div>
+                      {isEditingSettings && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => handleRemoveTeamMember(team.id)}
+                          className="text-destructive hover:text-destructive"
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                  ))}
+                  {teams.length === 0 && (
+                    <p className="text-sm text-muted-foreground py-2">
+                      No team members assigned
+                    </p>
+                  )}
+                </div>
+
+                {/* Assign New Team Member */}
+                {isEditingSettings && (
+                  <div className="space-y-3">
+                    {!isAssigningTeam ? (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setIsAssigningTeam(true)}
+                        className="w-full"
+                      >
+                        <UserPlus className="mr-2 h-4 w-4" />
+                        Assign Team Member
+                      </Button>
+                    ) : (
+                      <div className="space-y-3 p-3 border rounded-lg bg-background">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-sm font-medium">
+                            Assign Staff Member
+                          </Label>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setIsAssigningTeam(false);
+                              setSelectedStaff(null);
+                              setSearchQuery("");
+                              setOpenStaffSelect(false);
+                            }}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+
+                        <Popover
+                          open={openStaffSelect}
+                          onOpenChange={setOpenStaffSelect}
+                        >
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant="outline"
+                              role="combobox"
+                              aria-expanded={openStaffSelect}
+                              className="w-full justify-between"
+                            >
+                              {selectedStaff
+                                ? selectedStaff.firstName +
+                                  selectedStaff.lastName
+                                : "Search and select staff member..."}
+                              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-full p-0">
+                            <Command>
+                              <CommandInput
+                                placeholder="Search staff members..."
+                                value={searchQuery}
+                                onValueChange={setSearchQuery}
+                              />
+                              <CommandEmpty>
+                                No staff members found.
+                              </CommandEmpty>
+                              <CommandGroup className="max-h-64 overflow-y-auto">
+                                {filteredStaff?.map((staff) => (
+                                  <CommandItem
+                                    key={staff.id}
+                                    value={staff.firstName}
+                                    onSelect={() => {
+                                      setSelectedStaff(staff);
+                                      setOpenStaffSelect(false);
+                                    }}
+                                  >
+                                    <div className="flex items-center gap-3 w-full">
+                                      <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                                        <span className="text-xs font-medium text-primary">
+                                          {staff?.firstName
+                                            .split(" ")
+                                            .map((n) => n[0])
+                                            .join("")}
+                                          {staff?.lastName
+                                            .split(" ")
+                                            .map((n) => n[0])
+                                            .join("")}
+                                        </span>
+                                      </div>
+                                      <div className="flex-1">
+                                        <p className="font-medium text-sm">
+                                          {staff.firstName} {staff.lastName}
+                                        </p>
+                                        <p className="text-xs text-muted-foreground">
+                                          {staff.role} • {staff.department}
+                                        </p>
+                                      </div>
+                                      <Check
+                                        className={cn(
+                                          "ml-auto h-4 w-4",
+                                          selectedStaff?.id === staff.id
+                                            ? "opacity-100"
+                                            : "opacity-0"
+                                        )}
+                                      />
+                                    </div>
+                                  </CommandItem>
+                                ))}
+                              </CommandGroup>
+                            </Command>
+                          </PopoverContent>
+                        </Popover>
+
+                        <div className="flex gap-2">
+                          <Button
+                            onClick={handleAssignStaff}
+                            disabled={!selectedStaff}
+                            size="sm"
+                            className="flex-1"
+                          >
+                            <UserPlus className="mr-2 h-4 w-4" />
+                            Assign
+                          </Button>
+                          <Button
+                            variant="outline"
+                            onClick={() => {
+                              setIsAssigningTeam(false);
+                              setSelectedStaff(null);
+                              setSearchQuery("");
+                              setOpenStaffSelect(false);
+                            }}
+                            size="sm"
+                          >
+                            Cancel
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
             <div className="flex items-center justify-between">
               <Label>Enable SMS Reminders</Label>

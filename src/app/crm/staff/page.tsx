@@ -49,7 +49,7 @@ import {
 } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { cn } from "@/lib/utils";
-import { getStaffs } from "@/app/lib/staffApi";
+import { deleteStaff, getStaffs } from "@/app/lib/staffApi";
 import { SkeletonRow } from "@/components/layout/SkeletonRow";
 
 // Sample staff data
@@ -110,9 +110,21 @@ export default function StaffDirectoryPage() {
   const [recordsPerPage, setRecordsPerPage] = useState(10);
   const [loading, setLoading] = useState(false);
 
-  const handleDeleteStaff = (id: string) => {
-    setStaff(staff.filter((s) => s.id !== id));
-    toast.success("Staff member deleted successfully");
+  const handleDeleteStaff = async (id: string) => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      toast.error("Missing access token");
+      return;
+    }
+
+    try {
+      await deleteStaff(token, id);
+      setStaff((prev) => prev.filter((client) => client.id !== id));
+      toast.success("Staff deleted successfully");
+    } catch (err: any) {
+      console.error("Error deleting staff:", err);
+      toast.error(err.message || "Failed to delete staff");
+    }
   };
 
   const handleCreateAccount = (staffMember: any) => {
@@ -330,7 +342,7 @@ export default function StaffDirectoryPage() {
                               staffMember.isActive ? "default" : "outline"
                             }
                           >
-                            {staffMember.isActive ? 'Active' : "Inactive"}
+                            {staffMember.isActive ? "Active" : "Inactive"}
                           </Badge>
                         </TableCell>
                         <TableCell>

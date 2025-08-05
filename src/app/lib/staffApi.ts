@@ -1,6 +1,6 @@
 const production =  'https://primebackend.onrender.com'
 
-// const production =  'http://localhost:3000'
+// const production = "http://localhost:3000";
 
 export async function createStaff(
   staffData: Record<string, any>,
@@ -46,15 +46,12 @@ export async function getStaffs(
   params.append("page", page.toString());
   params.append("limit", limit.toString());
 
-  const res = await fetch(
-    `${production}/api/auth/users?${params.toString()}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  const res = await fetch(`${production}/api/auth/users?${params.toString()}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
 
   if (!res) throw new Error("Failed to fetch clients");
   console.log("Response status:", res);
@@ -102,4 +99,21 @@ export async function updateStaffById(
 
   const data = await res.json();
   return data.user; // adjust if your backend returns differently
+}
+
+// function to delete staff
+export async function deleteStaff(token: string, id: string) {
+  const res = await fetch(`${production}/api/auth/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.message || "Failed to delete staff");
+  }
+  return true;
 }
