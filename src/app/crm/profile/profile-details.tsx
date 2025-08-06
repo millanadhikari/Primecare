@@ -243,10 +243,11 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
         toast.success("Profile image uploaded");
         setLoading(false);
       }
-
+      console.log("Profile image URL:", editedProfile);
       // 📝 Update user with image + other data
+      const { clientId, ...sanitizedProfile } = editedProfile as any
       const updatedProfile = {
-        ...editedProfile,
+        ...sanitizedProfile,
         profileImage: profileImageUrl,
         profileImagePublicId,
         joinedDate,

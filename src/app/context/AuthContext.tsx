@@ -26,6 +26,7 @@ type AuthContextType = {
   login: (user: User, accessToken: string) => Promise<void>;
   logout: () => Promise<void>;
   updateUser: (updates: Partial<User>) => Promise<void>;
+  setUser: (user: User | null) => void;
   changePassword: (passwords: {
     currentPassword: string;
     newPassword: string;
@@ -49,6 +50,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUser(res.data);
+      console.log("Fetched user:", res.data.data.user);
     } catch (err) {
       console.error("Failed to fetch user:", err);
       setUser(null);
@@ -63,7 +65,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.log("Redirecting to /crm...");
       setTimeout(() => {
         router.push("/crm");
-      }, 200);
+      }, 100);
     } catch (err: any) {
       console.error("Login error:", err);
       throw new Error("Login failed");
@@ -90,7 +92,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const res = await axios.put("/auth/profile", updates, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
+
+     
       setUser(res.data.user);
+
     } catch (err) {
       console.error("Update user failed:", err);
       throw new Error("Failed to update profile");
@@ -166,6 +171,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     <AuthContext.Provider
       value={{
         user,
+        setUser,
         accessToken,
         login,
         logout,

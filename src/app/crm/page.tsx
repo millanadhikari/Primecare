@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { MainLayout } from "@/components/layout/main-layout";
 import { PageHeader } from "@/components/layout/page-header";
@@ -9,9 +9,29 @@ import { StatCard } from "@/components/dashboard/stat-card";
 // import { UpcomingEvents } from "@/components/dashboard/upcoming-events";
 import { CalendarCheck, FileText, Users, Armchair } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
+import { useEffect } from "react";
+import { useOnboarding } from "@/components/onboarding/onboarding-provider";
+import { useAuth } from "../context/AuthContext";
 
 export default function Home() {
+  const { showWelcome } = useOnboarding();
+  const { user, loading } = useAuth();
+  useEffect(() => {
+    if (loading) return;
+
+    if (user?.data?.user) {
+      console.log("✅ Logged in user:", user);
+
+      // ✅ Use isFirstLogin directly from backend
+      if (user?.data?.user?.isFirstLogin) {
+        setTimeout(() => {
+          showWelcome(user?.data?.user);
+        }, 200);
+      }
+    }
+
+    console.log("User onboarding check complete.");
+  }, [loading, user, showWelcome]);
   return (
     <MainLayout>
       <PageHeader

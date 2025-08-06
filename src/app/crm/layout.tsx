@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { AuthProvider } from "../context/AuthContext";
+import { OnboardingProvider } from "../../components/onboarding/onboarding-provider";
 
 export const metadata = {
   title: "My CRM",
@@ -12,8 +13,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-   
-        <AuthProvider>{children}</AuthProvider>
-   
+    <AuthProvider>
+      <OnboardingProvider>{children}</OnboardingProvider>
+    </AuthProvider>
   );
 }
