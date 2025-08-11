@@ -1,6 +1,6 @@
-// const production = "https://primebackend.onrender.com";
+const production = "https://primebackend.onrender.com";
 
-const production = "http://localhost:3000";
+// const production = "http://localhost:3000";
 
 export async function createDocumentTemplate(
   templateData: Record<string, any>,

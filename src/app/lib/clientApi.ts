@@ -1,8 +1,8 @@
 // lib/api.ts
 
-// const production =  'https://primebackend.onrender.com/api/client'
+const production =  'https://primebackend.onrender.com/api/client'
 // // 
-const production = "http://localhost:3000/api/client";
+// const production = "http://localhost:3000/api/client";
 
 export async function getClients(
   token: string,
