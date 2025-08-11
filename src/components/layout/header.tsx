@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/app/context/AuthContext";
+import { NotificationDropdown } from "../notifications/notification-dropdown";
 
 export function Header() {
   const { setTheme } = useTheme();
@@ -45,12 +46,13 @@ export function Header() {
       </div>
       <div className="flex items-center gap-2">
         <Button onClick={handleLogout}>Logout</Button>
-        <Button variant="outline" size="icon" className="relative">
+         <NotificationDropdown />
+        {/* <Button variant="outline" size="icon" className="relative">
           <Bell className="h-4 w-4" />
           <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-destructive text-[10px] font-medium text-destructive-foreground">
             3
           </span>
-        </Button>
+        </Button> */}
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="icon">

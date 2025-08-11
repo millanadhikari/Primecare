@@ -12,10 +12,13 @@ import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
 import { useOnboarding } from "@/components/onboarding/onboarding-provider";
 import { useAuth } from "../context/AuthContext";
+import { useSocketNotifications } from "@/hooks/use-socket-notifications";
 
 export default function Home() {
   const { showWelcome } = useOnboarding();
   const { user, loading } = useAuth();
+
+  useSocketNotifications(user?.data?.user?.id);
   useEffect(() => {
     if (loading) return;
 

@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { AuthProvider } from "../context/AuthContext";
 import { OnboardingProvider } from "../../components/onboarding/onboarding-provider";
+import { NotificationProvider } from "@/components/notifications/notification-provider";
 
 export const metadata = {
   title: "My CRM",
@@ -14,7 +15,9 @@ export default function RootLayout({
 }>) {
   return (
     <AuthProvider>
+        <NotificationProvider>
       <OnboardingProvider>{children}</OnboardingProvider>
+      </NotificationProvider>
     </AuthProvider>
   );
 }

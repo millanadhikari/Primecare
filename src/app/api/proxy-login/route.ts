@@ -2,7 +2,11 @@ import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 import axios from "axios";
 
-const BACKEND_URL = "https://primebackend.onrender.com/api/auth/login";
+// const BACKEND_URL = "https://primebackend.onrender.com/api/auth/login";
+
+
+const BACKEND_URL = "http://localhost:3000/api/auth/login";
+
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
