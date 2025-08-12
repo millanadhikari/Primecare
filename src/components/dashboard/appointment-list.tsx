@@ -62,7 +62,7 @@ export function AppointmentsList({ appointments, className }: AppointmentsListPr
                     : appointment.status === "in-progress"
                     ? "default"
                     : appointment.status === "completed"
-                    ? "success"
+                    ? "outline"
                     : "destructive"
                 }
               >
