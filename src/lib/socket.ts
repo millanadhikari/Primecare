@@ -17,7 +17,7 @@ class SocketManager {
     try {
       this.socket = io(
         // process.env.NEXT_PUBLIC_SOCKET_URL ||
-         "http://localhost:3000",
+         "https://primebackend.onrender.com",
         {
           transports: ["websocket", "polling"],
           timeout: 20000,
