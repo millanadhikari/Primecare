@@ -55,7 +55,7 @@ export function StatCard({
             >
               {change.value}
             </span>
-            from last month
+            {title === "Today's Activities" ? 'from yesterday': 'from last month'}
           </p>
         )}
       </CardContent>

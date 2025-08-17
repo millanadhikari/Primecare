@@ -248,7 +248,7 @@ export function Sidebar({ isCollapsed, onCollapse }: SidebarProps) {
                     isCollapsed={isCollapsed}
                   />
                   <SidebarLink
-                    href="/activity"
+                    href="/crm/activity"
                     icon={<Activity className="h-5 w-5" />}
                     label="Activity Log"
                     isCollapsed={isCollapsed}

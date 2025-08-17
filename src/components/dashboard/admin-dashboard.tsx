@@ -48,6 +48,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { formatDistanceToNow, set } from "date-fns";
 
 // Sample data for admin dashboard
 const adminKPIs = {
@@ -182,6 +183,7 @@ export function AdminDashboard() {
   const [kpiData, setKpiData] = useState(null); // state for the API "data" object
   const [loading, setLoading] = useState(true); // for spinner/loading state
   const [error, setError] = useState(null); // for error handling
+  const [recentActivities, setRecentActivities] = useState(null); // state for recent activities
 
   const fetchKPIData = async () => {
     try {
@@ -192,7 +194,38 @@ export function AdminDashboard() {
       const json = await res.json();
 
       // Set only the "data" field from the API
+      console.log(json.data);
       setKpiData(json.data);
+    } catch (err) {
+      console.error("Error fetching KPI data:", err);
+      setError("Failed to fetch KPI data");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchActivities = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const token = localStorage.getItem("accessToken"); // Or however you store it
+
+      const res = await fetch(
+        "https://primebackend.onrender.com/api/activities?page=$1&limit=5",
+        {
+          method: "GET", // or POST if needed
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`, // <-- Send token here
+          },
+        }
+      );
+
+      const data = await res.json();
+      console.log("Fetched activities:", data);
+      setRecentActivities(data.data.activities);
+      console.log(recentActivities); // Assuming the API returns an array of activities
     } catch (err) {
       console.error("Error fetching KPI data:", err);
       setError("Failed to fetch KPI data");
@@ -204,6 +237,7 @@ export function AdminDashboard() {
   // Fetch on component mount
   useEffect(() => {
     fetchKPIData();
+    fetchActivities();
   }, []);
   const handleQuickAction = (action: string) => {
     switch (action) {
@@ -271,9 +305,9 @@ export function AdminDashboard() {
 
   const getActivityIcon = (type: string) => {
     switch (type) {
-      case "user_created":
+      case "USER_CREATED":
         return <UserPlus className="h-4 w-4 text-blue-500" />;
-      case "client_added":
+      case "CLIENT_ADDED":
         return <Users className="h-4 w-4 text-green-500" />;
       case "message_received":
         return <MessageSquare className="h-4 w-4 text-purple-500" />;
@@ -321,11 +355,11 @@ export function AdminDashboard() {
         />
         <StatCard
           title="Today's Activities"
-          value={adminKPIs.todayActivities.value.toString()}
+          value={kpiData?.totalActivity?.value.toString()}
           icon={<Activity className="h-4 w-4 text-muted-foreground" />}
           change={{
-            value: `+${adminKPIs.todayActivities.change}%`,
-            trend: adminKPIs.todayActivities.trend,
+            value: `+${kpiData?.totalActivity?.change}%`,
+            trend: kpiData?.totalActivity?.trend,
           }}
           variant="success"
         />
@@ -527,7 +561,7 @@ export function AdminDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {recentActivities.map((activity) => (
+            {recentActivities?.map((activity) => (
               <div key={activity.id} className="flex items-start gap-3">
                 <div className="flex-shrink-0 mt-0.5">
                   {getActivityIcon(activity.type)}
@@ -535,13 +569,17 @@ export function AdminDashboard() {
                 <div className="flex-1 min-w-0">
                   <p className="text-sm">{activity.description}</p>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="text-xs font-medium">{activity.user}</span>
+                    <span className="text-xs font-medium">
+                      {activity.userName}
+                    </span>
                     <Badge variant="outline" className="text-xs">
                       {activity.userRole}
                     </Badge>
                   </div>
                   <p className="text-xs text-muted-foreground mt-1">
-                    {activity.time}
+                    {formatDistanceToNow(new Date(activity.createdAt), {
+                      addSuffix: true,
+                    })}
                   </p>
                 </div>
               </div>
