@@ -387,7 +387,7 @@ export function ClientDetails({ client }: ClientDetailsProps) {
     try {
       const token = localStorage.getItem("accessToken");
       if (!token) throw new Error("No auth token");
-      console.log("toconnect", toConnect)
+      console.log("toconnect", toConnect);
       // Update on backend
       await updateClientById(clientData.id, updatedData, token);
 

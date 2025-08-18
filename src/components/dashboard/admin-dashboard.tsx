@@ -49,6 +49,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { formatDistanceToNow, set } from "date-fns";
+import { Skeleton } from "../ui/skeleton";
 
 // Sample data for admin dashboard
 const adminKPIs = {
@@ -190,7 +191,9 @@ export function AdminDashboard() {
       setLoading(true);
       setError(null);
 
-      const res = await fetch(`https://primebackend.onrender.com/api/admin-kpis`);
+      const res = await fetch(
+        `https://primebackend.onrender.com/api/admin-kpis`
+      );
       const json = await res.json();
 
       // Set only the "data" field from the API
@@ -553,7 +556,7 @@ export function AdminDashboard() {
       {/* Recent Activities and Active Users */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Recent Activities */}
-        <Card>
+        <Card onClick={() => router.push("/crm/activity")} className="cursor-pointer">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Activity className="h-5 w-5" />
@@ -561,29 +564,48 @@ export function AdminDashboard() {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {recentActivities?.map((activity) => (
-              <div key={activity.id} className="flex items-start gap-3">
-                <div className="flex-shrink-0 mt-0.5">
-                  {getActivityIcon(activity.type)}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm">{activity.description}</p>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="text-xs font-medium">
-                      {activity.userName}
-                    </span>
-                    <Badge variant="outline" className="text-xs">
-                      {activity.userRole}
-                    </Badge>
+            {/* Skeleton loader while recent activities are loading */}
+            {loading ? (
+              <>
+                {Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="flex items-start gap-3">
+                    <Skeleton className="h-6 w-6 rounded-full mt-0.5" />
+                    <div className="flex-1 min-w-0">
+                      <Skeleton className="h-4 w-[180px] mb-2" />
+                      <div className="flex items-center gap-2 mt-1">
+                        <Skeleton className="h-3 w-[60px]" />
+                        <Skeleton className="h-5 w-[48px] rounded" />
+                      </div>
+                      <Skeleton className="h-3 w-[70px] mt-2" />
+                    </div>
                   </div>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    {formatDistanceToNow(new Date(activity.createdAt), {
-                      addSuffix: true,
-                    })}
-                  </p>
+                ))}
+              </>
+            ) : (
+              recentActivities?.map((activity) => (
+                <div key={activity.id} className="flex items-start gap-3">
+                  <div className="flex-shrink-0 mt-0.5">
+                    {getActivityIcon(activity.type)}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm">{activity.description}</p>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-xs font-medium">
+                        {activity.userName}
+                      </span>
+                      <Badge variant="outline" className="text-xs">
+                        {activity.userRole}
+                      </Badge>
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {formatDistanceToNow(new Date(activity.createdAt), {
+                        addSuffix: true,
+                      })}
+                    </p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </CardContent>
         </Card>
 

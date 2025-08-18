@@ -6,6 +6,7 @@ import { MainLayout } from "@/components/layout/main-layout";
 import { StaffDetails } from "./staff-details";
 import { getClientById } from "@/app/lib/clientApi";
 import { getStaffById } from "@/app/lib/staffApi";
+import { Loader2 } from "lucide-react";
 
 export default function ClientDetailsPage() {
   const { id } = useParams();
@@ -34,7 +35,13 @@ export default function ClientDetailsPage() {
       .finally(() => setLoading(false));
   }, [id]);
 
-  if (loading) return <p>Loading staff...</p>;
+  if (loading)
+    return (
+      <div className="flex items-center justify-center h-64">
+        <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
+        <span className="ml-4 text-gray-500">Loading staff...</span>
+      </div>
+    );
   if (error) return <p className="text-red-500">{error}</p>;
   if (!staff) return <p>Client not found.</p>;
   return (

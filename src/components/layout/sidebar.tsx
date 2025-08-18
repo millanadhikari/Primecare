@@ -212,7 +212,7 @@ export function Sidebar({ isCollapsed, onCollapse }: SidebarProps) {
               label="Analytics"
               isCollapsed={isCollapsed}
             />
-            {(isAdmin ) && (
+            {isAdmin && (
               <span>
                 <NavGroup title="Administration" isCollapsed={isCollapsed}>
                   <SidebarLink
@@ -270,14 +270,18 @@ export function Sidebar({ isCollapsed, onCollapse }: SidebarProps) {
               isCollapsed ? "justify-center" : ""
             )}
           >
-            <Avatar className="h-10 w-10 rounded-full">
+            <Avatar className="h-10 w-10 rounded-full overflow-hidden">
               <AvatarImage
                 src={
                   user?.data?.user.profileImage ??
                   "https://via.placeholder.com/150"
                 }
+                className="h-full w-full object-cover rounded-full"
+                alt="User avatar"
               />
-              <AvatarFallback>{initials}</AvatarFallback>
+              <AvatarFallback className="w-full h-full flex items-center justify-center font-semibold">
+                {initials}
+              </AvatarFallback>
             </Avatar>
             {!isCollapsed && (
               <div>
@@ -285,7 +289,7 @@ export function Sidebar({ isCollapsed, onCollapse }: SidebarProps) {
                   {user?.data?.user.firstName} {user?.data?.user.lastName}
                 </div>
                 <div className="text-xs text-muted-foreground">
-                  Medical Director
+                  {user?.data?.user?.role}
                 </div>
               </div>
             )}

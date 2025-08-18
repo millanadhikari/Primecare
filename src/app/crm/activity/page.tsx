@@ -34,6 +34,7 @@ import {
 import { cn } from "@/lib/utils";
 import { MainLayout } from "@/components/layout/main-layout";
 import { PageHeader } from "@/components/layout/page-header";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface ActivityItem {
   id: string;
@@ -68,7 +69,7 @@ export default function ActivityPage() {
     async (pageNum: number = 1, reset: boolean = false) => {
       if (pageNum === 1) setIsLoading(true);
       else setIsLoadingMore(true);
-
+      setIsLoading(true);
       try {
         const token = localStorage.getItem("accessToken");
         const res = await fetch(
@@ -99,7 +100,7 @@ export default function ActivityPage() {
           meta: a.meta,
           actionUrl:
             a.targetType && a.targetId
-              ? `/${a.targetType}s/${a.targetId}`
+              ? `${a.targetType}s/${a.targetId}`
               : undefined,
         }));
 
@@ -108,6 +109,7 @@ export default function ActivityPage() {
 
         setHasMore(fetched.length === 20);
         setPage(pageNum);
+        console.log(activities, 'lkjdf')
       } catch (error) {
         toast.error("Failed to load activities");
         console.error("Error fetching activities:", error);
@@ -308,7 +310,36 @@ export default function ActivityPage() {
           {/* Activity Feed */}
           <ScrollArea className="h-[600px]">
             {isLoading ? (
-              <p>Loading...</p>
+              <div className="space-y-2">
+                {Array.from({ length: 8 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="group flex items-start space-x-4 p-4 rounded-lg border"
+                  >
+                    {/* Avatar Skeleton */}
+                    <div className="flex-shrink-0">
+                      <div className="relative">
+                        <Skeleton className="h-10 w-10 rounded-full" />
+                        {/* Icon badge skeleton */}
+                        <div className="absolute -bottom-1 -right-1 h-6 w-6 rounded-full bg-background border-2 border-background flex items-center justify-center">
+                          <Skeleton className="h-4 w-4 rounded" />
+                        </div>
+                      </div>
+                    </div>
+                    {/* Text Skeletons */}
+                    <div className="flex-1 min-w-0">
+                      <Skeleton className="h-4 w-[180px] mb-2" />
+                      <div className="flex items-center gap-2 mt-1">
+                        <Skeleton className="h-3 w-[70px]" />
+                        <Skeleton className="h-5 w-[60px] rounded" />
+                        <Skeleton className="h-5 w-[60px] rounded" />
+                        <Skeleton className="h-3 w-[55px]" />
+                        <Skeleton className="h-3 w-[25px]" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
             ) : filteredActivities.length === 0 ? (
               <div className="text-center py-12">
                 <Activity className="mx-auto h-12 w-12 mb-4 text-muted-foreground" />
@@ -345,7 +376,6 @@ export default function ActivityPage() {
                         </div>
                       </div>
                     </div>
-
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium">
                         {activity.description}

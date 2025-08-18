@@ -105,19 +105,20 @@ interface ProfileDetailsProps {
   user: UserProfile;
 }
 
-export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
+export function ProfileDetails({userProfile, user}: ProfileDetailsProps) {
   const router = useRouter();
+  const { updateUser, changePassword, fetchUser } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [editedProfile, setEditedProfile] = useState(user);
-  const { updateUser, changePassword } = useAuth();
+
   const [selectedProfileImage, setSelectedProfileImage] = useState<File | null>(
     null
   );
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   const [joinedDate, setJoinedDate] = useState<Date | undefined>(() => {
-    if (!user.joinedDate) return undefined; // handle null or undefined
-    const parsed = new Date(user.joinedDate);
+    if (!user?.joinedDate) return undefined; // handle null or undefined
+    const parsed = new Date(user?.joinedDate);
     return isNaN(parsed.getTime()) ? undefined : parsed; // handle invalid date
   });
   const [passwordData, setPasswordData] = useState({
@@ -207,7 +208,8 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
   //     toast.error("Update failed");
   //   }
   // };
-  const handleSave = async () => {
+  const handleSave = async (e) => {
+    e.preventDefault();
     setLoading(true);
     try {
       let profileImageUrl = editedProfile.profileImage;
@@ -241,11 +243,10 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
         profileImageUrl = data.url;
         profileImagePublicId = data.publicId;
         toast.success("Profile image uploaded");
-        setLoading(false);
       }
       console.log("Profile image URL:", editedProfile);
       // 📝 Update user with image + other data
-      const { clientId, ...sanitizedProfile } = editedProfile as any
+      const { clientId, ...sanitizedProfile } = editedProfile as any;
       const updatedProfile = {
         ...sanitizedProfile,
         profileImage: profileImageUrl,
@@ -261,6 +262,9 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
       toast.success("Profile updated");
       setIsEditing(false);
       setSelectedProfileImage(null); // clear selected image
+      // await fetchUser();
+      setLoading(false);
+
       window.location.reload();
     } catch (err) {
       toast.error("Update failed");
@@ -370,7 +374,7 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
               <CardContent className="space-y-6">
                 <div className="flex flex-col items-center gap-4">
                   <div className="relative">
-                    <Avatar className="h-20 w-20">
+                    <Avatar className="h-20 w-20 rounded-full overflow-hidden">
                       <AvatarImage
                         src={
                           previewUrl
@@ -378,12 +382,15 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
                             : editedProfile?.profileImage ||
                               "/default-avatar.png"
                         }
-                      />{" "}
-                      <AvatarFallback className="text-lg w-full">
-                        {editedProfile?.firstName[0]}
-                        {editedProfile?.lastName[0]}
+                        className="h-full w-full object-cover rounded-full"
+                        alt="Profile"
+                      />
+                      <AvatarFallback className="w-full h-full flex items-center justify-center text-lg font-semibold rounded-full bg-gray-200">
+                        {editedProfile?.firstName?.[0] || ""}
+                        {editedProfile?.lastName?.[0] || ""}
                       </AvatarFallback>
                     </Avatar>
+
                     {isEditing && (
                       <Label
                         htmlFor="profileImage"
@@ -402,21 +409,21 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
                   </div>
                   <div className="text-center">
                     <h2 className="text-xl font-semibold">
-                      {editedProfile.firstName} {editedProfile.lastName}
+                      {editedProfile?.firstName} {editedProfile?.lastName}
                     </h2>
                     <p className="text-sm text-muted-foreground">
-                      {editedProfile.role}
+                      {editedProfile?.role}
                     </p>
                     <div className="mt-2 flex items-center justify-center gap-2">
                       <Badge
                         variant={
-                          editedProfile.isVerified ? "default" : "secondary"
+                          editedProfile?.isVerified ? "default" : "secondary"
                         }
                       >
-                        {editedProfile.isVerified ? "Verified" : "Unverified"}
+                        {editedProfile?.isVerified ? "Verified" : "Unverified"}
                       </Badge>
                       <Badge variant="outline">
-                        {editedProfile.adminLevel}
+                        {editedProfile?.adminLevel}
                       </Badge>
                     </div>
                   </div>
@@ -427,7 +434,7 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
                     <div className="grid gap-2">
                       <Label>First Name</Label>
                       <Input
-                        value={editedProfile.firstName}
+                        value={editedProfile?.firstName}
                         onChange={(e) =>
                           setEditedProfile({
                             ...editedProfile,
@@ -440,7 +447,7 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
                     <div className="grid gap-2">
                       <Label>Last Name</Label>
                       <Input
-                        value={editedProfile.lastName}
+                        value={editedProfile?.lastName}
                         onChange={(e) =>
                           setEditedProfile({
                             ...editedProfile,
@@ -456,7 +463,7 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
                     <div className="relative">
                       <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Input
-                        value={editedProfile.email}
+                        value={editedProfile?.email}
                         disabled
                         className="pl-10 bg-muted"
                       />
@@ -487,7 +494,7 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
                     <div className="relative">
                       <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                       <Textarea
-                        value={editedProfile.address}
+                        value={editedProfile?.address}
                         onChange={(e) =>
                           setEditedProfile({
                             ...editedProfile,
@@ -502,7 +509,7 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
                   <div className="grid gap-2">
                     <Label>Emergency Contact</Label>
                     <Input
-                      value={editedProfile.emergencyContact}
+                      value={editedProfile?.emergencyContact}
                       onChange={(e) =>
                         setEditedProfile({
                           ...editedProfile,
@@ -566,7 +573,7 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
                       </Popover>
                     ) : (
                       <span className="font-medium text-sm">
-                        {formatDateTime(editedProfile.joinedDate)}
+                        {formatDateTime(editedProfile?.joinedDate)}
                       </span>
                     )}
                   </div>
@@ -584,7 +591,7 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
                   </div>
                   <div className="text-right">
                     <div className="font-medium text-sm">
-                      {formatDateTime(editedProfile.lastLogin)}
+                      {formatDateTime(editedProfile?.lastLogin)}
                     </div>
                     {/* <div className="text-xs text-muted-foreground">
                       ISO8601: {formatDateTimeISO(editedProfile.lastLogin)}
@@ -614,7 +621,7 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
                 <div className="grid gap-2">
                   <Label>Role</Label>
                   <Select
-                    value={editedProfile.role}
+                    value={editedProfile?.role}
                     onValueChange={(value) =>
                       setEditedProfile({ ...editedProfile, role: value })
                     }
@@ -646,7 +653,7 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
                 <div className="grid gap-2">
                   <Label>Admin Level</Label>
                   <Select
-                    value={editedProfile.adminLevel}
+                    value={editedProfile?.adminLevel}
                     onValueChange={(value) =>
                       setEditedProfile({ ...editedProfile, adminLevel: value })
                     }
@@ -668,7 +675,7 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
                 <div className="grid gap-2">
                   <Label>Department</Label>
                   <Select
-                    value={editedProfile.department}
+                    value={editedProfile?.department}
                     onValueChange={(value) =>
                       setEditedProfile({ ...editedProfile, department: value })
                     }
@@ -697,7 +704,7 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
                 <div className="grid gap-2">
                   <Label>Region</Label>
                   <Select
-                    value={editedProfile.region}
+                    value={editedProfile?.region}
                     onValueChange={(value) =>
                       setEditedProfile({ ...editedProfile, region: value })
                     }
@@ -722,7 +729,7 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
               <div className="grid gap-2">
                 <Label>Specialization</Label>
                 <Input
-                  value={editedProfile.specialization}
+                  value={editedProfile?.specialization}
                   onChange={(e) =>
                     setEditedProfile({
                       ...editedProfile,
@@ -735,7 +742,7 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
               <div className="grid gap-2">
                 <Label>License Number</Label>
                 <Input
-                  value={editedProfile.licenseNumber}
+                  value={editedProfile?.licenseNumber}
                   onChange={(e) =>
                     setEditedProfile({
                       ...editedProfile,
@@ -761,7 +768,7 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
                     >
                       <Switch
                         id={permission}
-                        checked={editedProfile.permissions.includes(permission)}
+                        checked={editedProfile?.permissions?.includes(permission)}
                         onCheckedChange={() =>
                           handlePermissionToggle(permission)
                         }
@@ -907,7 +914,7 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
                     </p>
                   </div>
                   <Switch
-                    checked={editedProfile.twoFactorEnabled}
+                    checked={editedProfile?.twoFactorEnabled}
                     onCheckedChange={(checked: any) =>
                       setEditedProfile({
                         ...editedProfile,
@@ -924,9 +931,9 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
                     </p>
                   </div>
                   <Badge
-                    variant={editedProfile.isVerified ? "default" : "secondary"}
+                    variant={editedProfile?.isVerified ? "default" : "secondary"}
                   >
-                    {editedProfile.isVerified ? "Verified" : "Unverified"}
+                    {editedProfile?.isVerified ? "Verified" : "Unverified"}
                   </Badge>
                 </div>
               </CardContent>
@@ -948,7 +955,7 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
                   </p>
                 </div>
                 <Switch
-                  checked={editedProfile.emailNotifications}
+                  checked={editedProfile?.emailNotifications}
                   onCheckedChange={(checked: any) =>
                     setEditedProfile({
                       ...editedProfile,
@@ -965,7 +972,7 @@ export function ProfileDetails({ userProfile, user }: ProfileDetailsProps) {
                   </p>
                 </div>
                 <Switch
-                  checked={editedProfile.smsNotifications}
+                  checked={editedProfile?.smsNotifications}
                   onCheckedChange={(checked: any) =>
                     setEditedProfile({
                       ...editedProfile,

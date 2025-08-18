@@ -32,6 +32,7 @@ type AuthContextType = {
     newPassword: string;
   }) => Promise<void>;
   loading: boolean;
+  fetchUser:any;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -93,7 +94,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
 
-     
+     console.log(res)
       setUser(res.data.user);
 
     } catch (err) {
@@ -178,6 +179,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         updateUser,
         changePassword,
         loading,
+        fetchUser,
       }}
     >
       {children}

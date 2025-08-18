@@ -44,27 +44,27 @@ export default function ProfilePage() {
     smsNotifications: false,
   };
 
-  useEffect(() => {
-    // Initialize editedProfile with userProfile when component mounts
-    console.log("profile-details d", newUser);
-    console.log("sanitized profile-details d", sanitizedUser);
+  // useEffect(() => {
+  //   // Initialize editedProfile with userProfile when component mounts
+  //   console.log("profile-details d", newUser);
+  //   console.log("sanitized profile-details d", sanitizedUser);
 
-    // const mayaUser = autoSanitize(newUser);
-    // function autoSanitize(newUser:any) {
-    //   return Object.fromEntries(
-    //     Object.entries(newUser).map(([key, value]) => {
-    //       if (value === null) return [key, ""]; // or use [] / {} / false depending on field
-    //       return [key, value];
-    //     })
-    //   );
-    // }
-  }, [user]);
+  //   // const mayaUser = autoSanitize(newUser);
+  //   // function autoSanitize(newUser:any) {
+  //   //   return Object.fromEntries(
+  //   //     Object.entries(newUser).map(([key, value]) => {
+  //   //       if (value === null) return [key, ""]; // or use [] / {} / false depending on field
+  //   //       return [key, value];
+  //   //     })
+  //   //   );
+  //   // }
+  // }, [user]);
 
   return (
     <MainLayout>
-      {user?.data?.user && (
-        <ProfileDetails userProfile={userProfile} user={sanitizedUser} />
-      )}
+      {/* {user?.data?.user && ( */}
+      <ProfileDetails userProfile={userProfile} user={sanitizedUser} />
+      {/* )} */}
     </MainLayout>
   );
 }
