@@ -94,7 +94,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
 
-     console.log(res)
       setUser(res.data.user);
 
     } catch (err) {
