@@ -32,7 +32,7 @@ type AuthContextType = {
     newPassword: string;
   }) => Promise<void>;
   loading: boolean;
-  fetchUser:any;
+  fetchUser: any;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -43,18 +43,32 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [accessToken, setAccessToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-
   const fetchUser = async (token: string) => {
     if (!token) return;
+
     try {
       const res = await axios.get("auth/me", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUser(res.data);
       console.log("Fetched user:", res.data.data.user);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Failed to fetch user:", err);
-      setUser(null);
+
+      // If error is 401 Unauthorized, clear user and redirect
+      if (
+        (err.response && err.response.status === 401) ||
+        err.status === 401 // fallback if using alternative fetchers
+      ) {
+        setUser(null);
+        // Optionally clear tokens from localStorage/cookies here
+        if (typeof window !== "undefined") {
+          window.location.href = "/login";
+        }
+      } else {
+        setUser(null);
+        // Optionally: show error message etc.
+      }
     }
   };
 
@@ -95,7 +109,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       });
 
       setUser(res.data.user);
-
     } catch (err) {
       console.error("Update user failed:", err);
       throw new Error("Failed to update profile");

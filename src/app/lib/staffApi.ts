@@ -1,4 +1,4 @@
-const production =  'https://primebackend.onrender.com'
+const production = "https://primebackend.onrender.com";
 
 // const production = "http://localhost:3000";
 
@@ -116,4 +116,22 @@ export async function deleteStaff(token: string, id: string) {
     throw new Error(errorData.message || "Failed to delete staff");
   }
   return true;
+}
+
+//function to get forgot password
+export async function forgotPassword(email: string) {
+  const res = await fetch(`${production}/api/auth/forgot-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email }),
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData.message || "Failed to send reset link");
+  }
+
+  return true; // or return any success message from your API
 }

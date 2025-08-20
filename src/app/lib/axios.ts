@@ -5,13 +5,10 @@ import axios, {
 } from "axios";
 
 const production = "https://primebackend.onrender.com/api";
-// const production = "http://localhost:3000/api";
 
 const instance: AxiosInstance = axios.create({
-  baseURL:  production,
-  // baseURL: "/api", // 👈 local proxy via Next.js rewrite
-
-  withCredentials: true, // send cookies like refreshToken
+  baseURL: production,
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
@@ -28,7 +25,6 @@ const processQueue = (error: any, token: string | null = null) => {
       prom.resolve(token);
     }
   });
-
   failedQueue = [];
 };
 
@@ -64,7 +60,13 @@ instance.interceptors.response.use(
         return instance(originalRequest);
       } catch (err) {
         processQueue(err, null);
-        return Promise.reject(err);
+
+        // 👇 Auto logout and redirect to login page
+        if (typeof window !== "undefined") {
+          // Optionally clear localStorage/cookies or auth state here
+          window.location.href = "/login";
+        }
+        return Promise.reject(err); // Halt further requests
       } finally {
         isRefreshing = false;
       }

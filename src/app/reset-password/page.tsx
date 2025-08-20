@@ -4,10 +4,18 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { AccessibilityIcon, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
+import { forgotPassword } from "../lib/staffApi";
 
 export default function ResetPasswordPage() {
   const [email, setEmail] = useState("");
@@ -21,7 +29,8 @@ export default function ResetPasswordPage() {
     try {
       // Here you would typically make an API call to trigger password reset
       // For demo purposes, we'll simulate a successful request
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      await forgotPassword(email);
+      setEmail(""); // Clear the input field
       setIsSubmitted(true);
       toast.success("Reset instructions sent to your email");
     } catch (error) {
@@ -62,7 +71,11 @@ export default function ResetPasswordPage() {
               </div>
             </CardContent>
             <CardFooter className="flex flex-col space-y-2">
-              <Button className="w-full mt-5" type="submit" disabled={isLoading}>
+              <Button
+                className="w-full mt-5"
+                type="submit"
+                disabled={isLoading}
+              >
                 {isLoading ? "Sending..." : "Send Reset Instructions"}
               </Button>
               <Link
@@ -77,8 +90,9 @@ export default function ResetPasswordPage() {
         ) : (
           <CardContent className="text-center">
             <p className="mb-4 text-muted-foreground">
-              We&aspos;ve sent password reset instructions to your email. Please check
-              your inbox and follow the instructions to reset your password.
+              We&aspos;ve sent password reset instructions to your email. Please
+              check your inbox and follow the instructions to reset your
+              password.
             </p>
             <Link
               href="/crm/login"
