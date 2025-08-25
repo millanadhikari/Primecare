@@ -59,7 +59,7 @@ export default function Home() {
   const [currentUser, setCurrentUser] = useState(null);
   const { user } = useAuth();
   const [viewMode, setViewMode] = useState<"board" | "list">("board");
-  const [projects, setProjects] = useState<Project[]>(mockProjects);
+  const [projects, setProjects] = useState<Project[]>(null);
   const [tasks, setTasks] = useState<Task[]>(null);
   const [users, setUsers] = useState(null);
   const [selectedProject, setSelectedProject] = useState<string>("");
@@ -335,7 +335,7 @@ export default function Home() {
     }
   };
 
-  const selectedProjectData = projects.find((p) => p.id === selectedProject);
+  const selectedProjectData = projects?.find((p) => p.id === selectedProject);
 
   useEffect(() => {
     if (user) {

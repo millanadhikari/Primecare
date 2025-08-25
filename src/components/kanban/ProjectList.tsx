@@ -38,7 +38,7 @@ export function ProjectList({
 
       <ScrollArea className="max-h-96">
         <div className="p-2">
-          {projects.map((project) => (
+          {projects?.map((project) => (
             <div
               key={project.id}
               className={`relative group rounded-md mb-1 ${
