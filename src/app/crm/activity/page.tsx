@@ -176,8 +176,8 @@ export default function ActivityPage() {
         return "Client Management";
       case "MESSAGE_RECEIVED":
         return "Communication";
-      case "APPOINTMENT_SCHEDULED":
-        return "Scheduling";
+      case "PROJECT_ADDED":
+        return "Project Management";
       case "DOCUMENT_UPLOADED":
         return "Documents";
       case "SYSTEM_BACKUP":
@@ -199,7 +199,7 @@ export default function ActivityPage() {
         return <Users className="h-4 w-4 text-green-500" />;
       case "MESSAGE_RECEIVED":
         return <MessageSquare className="h-4 w-4 text-purple-500" />;
-      case "APPOINTMENT_SCHEDULED":
+      case "PROJECT_ADDED":
         return <CalendarIcon className="h-4 w-4 text-orange-500" />;
       case "DOCUMENT_UPLOADED":
         return <Upload className="h-4 w-4 text-indigo-500" />;

@@ -314,7 +314,7 @@ export function AdminDashboard() {
         return <Users className="h-4 w-4 text-green-500" />;
       case "message_received":
         return <MessageSquare className="h-4 w-4 text-purple-500" />;
-      case "appointment_scheduled":
+      case "PROJECT_ADDED":
         return <Calendar className="h-4 w-4 text-orange-500" />;
       case "system_alert":
         return <AlertTriangle className="h-4 w-4 text-red-500" />;
@@ -556,7 +556,10 @@ export function AdminDashboard() {
       {/* Recent Activities and Active Users */}
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Recent Activities */}
-        <Card onClick={() => router.push("/crm/activity")} className="cursor-pointer">
+        <Card
+          onClick={() => router.push("/crm/activity")}
+          className="cursor-pointer"
+        >
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Activity className="h-5 w-5" />

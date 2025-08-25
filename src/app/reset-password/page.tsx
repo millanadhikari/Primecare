@@ -90,7 +90,7 @@ export default function ResetPasswordPage() {
         ) : (
           <CardContent className="text-center">
             <p className="mb-4 text-muted-foreground">
-              We&aspos;ve sent password reset instructions to your email. Please
+              We have sent password reset instructions to your email. Please
               check your inbox and follow the instructions to reset your
               password.
             </p>

@@ -201,9 +201,9 @@ export function Sidebar({ isCollapsed, onCollapse }: SidebarProps) {
               isCollapsed={isCollapsed}
             />
             <SidebarLink
-              href="/records"
+              href="/crm/kanban"
               icon={<ClipboardList className="h-5 w-5" />}
-              label="Medical Records"
+              label="Project Management"
               isCollapsed={isCollapsed}
             />
             <SidebarLink
