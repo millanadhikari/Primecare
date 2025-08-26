@@ -27,7 +27,6 @@ import { Toaster } from "@/components/ui/sonner";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Plus, Layout, List } from "lucide-react";
-import { mockProjects, mockUsers, mockTasks } from "@/lib/mockData";
 import {
   Project,
   Task,
