@@ -272,7 +272,7 @@ export default function Home() {
     console.log("Creating Task:", newTask);
     const addedTask = await createTask(newTask, token);
     console.log("Added Task:", addedTask);
-    fetchTasks()
+    fetchTasks();
     // setTasks((prev) => [...prev, newTask]);
     toast.success("Task created successfully");
   };
@@ -470,18 +470,20 @@ export default function Home() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col lg:flex-row gap-6">
-            <div className="lg:w-64 flex-shrink-0">
-              <ProjectList
-                projects={projects}
-                selectedProject={selectedProject}
-                onSelectProject={setSelectedProject}
-                userRole={currentUser?.role}
-                onEditProject={setEditingProject}
-                onDeleteProject={(project) =>
-                  setDeletingItem({ type: "project", item: project })
-                }
-              />
-            </div>
+            {projects && (
+              <div className="lg:w-64 flex-shrink-0">
+                <ProjectList
+                  projects={projects}
+                  selectedProject={selectedProject}
+                  onSelectProject={setSelectedProject}
+                  userRole={currentUser?.role}
+                  onEditProject={setEditingProject}
+                  onDeleteProject={(project) =>
+                    setDeletingItem({ type: "project", item: project })
+                  }
+                />
+              </div>
+            )}
 
             <div className="flex-1">
               {selectedProjectData ? (
@@ -532,11 +534,10 @@ export default function Home() {
                   <div className="max-w-md mx-auto">
                     <Layout className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                     <h3 className="text-lg font-medium text-gray-900 mb-2">
-                      Select a Project
+                      {projects ? 'Select a Project' : 'Create a new Project'}
                     </h3>
                     <p className="text-gray-500 mb-6">
-                      Choose a project from the sidebar to view and manage its
-                      tasks.
+                     {projects ? ' Choose a project from the sidebar to view and manage its tasks' : 'Click on New Project on top right to create one.'}
                     </p>
                     {canCreateProject && (
                       <Button
