@@ -30,7 +30,7 @@ interface CreateProjectModalProps {
   open: boolean;
   onClose: () => void;
   onSubmit: (project: Omit<Project, "id" | "createdAt" | "updatedAt">) => void;
-  users: any
+  users: any;
 }
 
 export function CreateProjectModal({
@@ -107,7 +107,7 @@ export function CreateProjectModal({
               <Users className="w-4 h-4 mr-2" />
               Assign Users
             </label>
-            <ScrollArea className="h-32 border border-gray-200 rounded-md p-3">
+            <ScrollArea className="h-32 border border-gray-200 rounded-md p-3 overflow-y-auto">
               <div className="space-y-2">
                 {users?.map((user) => (
                   <div key={user.id} className="flex items-center space-x-2">
@@ -120,7 +120,9 @@ export function CreateProjectModal({
                       htmlFor={user.id}
                       className="text-sm text-gray-700 flex-1 cursor-pointer"
                     >
-                      <span className="font-medium">{user.firstName} {user.lastName}</span>
+                      <span className="font-medium">
+                        {user.firstName} {user.lastName}
+                      </span>
                       <span className="text-gray-500 ml-2">({user.role})</span>
                     </label>
                   </div>

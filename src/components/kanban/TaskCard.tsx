@@ -53,7 +53,7 @@ export function TaskCard({
     transition,
   };
 
-  const assignedUser = users.find((user) => user.id === task.assignedUserId);
+  const assignedUser = users?.find((user) => user.id === task.assignedUserId);
   const canEdit =
     userRole === "ADMIN" ||
     userRole === "COORDINATOR" ||

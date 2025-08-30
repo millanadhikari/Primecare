@@ -77,7 +77,7 @@ export async function createTask(taskData: Record<string, any>, token: string) {
 export async function getTasks(
   token: string,
   {
-    projectId = "",
+    projectId,
     status = "All",
     page = 1,
     limit = 10,
@@ -96,7 +96,7 @@ export async function getTasks(
   params.append("page", page.toString());
   params.append("limit", limit.toString());
 
-  const res = await fetch(`${production}/api/tasks?${params.toString()}`, {
+  const res = await fetch(`${production}/api/tasks/${params.toString()}`, {
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
@@ -181,8 +181,6 @@ export async function deleteTask(taskId: string, token: string) {
     const errorData = await res.json().catch(() => ({}));
     throw new Error(errorData.message || "Failed to delete task");
   }
-  
 
-  
   return res; // adjust if your backend returns differently
 }

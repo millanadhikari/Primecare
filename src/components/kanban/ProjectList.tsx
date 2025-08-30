@@ -28,7 +28,7 @@ export function ProjectList({
   onEditProject,
   onDeleteProject,
 }: ProjectListProps) {
-  const canManageProjects = userRole === "ADMIN" || userRole === "COORDINATOR";
+  const canManageProjects = userRole === "ADMIN";
 
   return (
     <div className="bg-white border border-gray-200 rounded-lg">
@@ -36,12 +36,13 @@ export function ProjectList({
         <h2 className="font-semibold text-gray-900">Projects</h2>
       </div>
 
-      <ScrollArea className="max-h-96">
-        <div className="p-2">
-          {projects && projects?.map((project) => (
+      {/* Custom slim scrollbar using Tailwind and custom styles */}
+      <ScrollArea className="max-h-96 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+        <div className="p-2 flex flex-col gap-1">
+          {projects?.map((project) => (
             <div
               key={project.id}
-              className={`relative group rounded-md mb-1 ${
+              className={`relative group rounded-md flex items-center transition ${
                 selectedProject === project.id
                   ? "bg-black text-white"
                   : "hover:bg-gray-50"
@@ -49,51 +50,49 @@ export function ProjectList({
             >
               <Button
                 variant="ghost"
-                className={`w-full justify-start h-auto p-3 ${
+                className={`flex-1 text-left h-auto p-3 flex flex-row items-start gap-3 ${
                   selectedProject === project.id
                     ? "bg-black text-white hover:bg-gray-800"
                     : "hover:bg-gray-50"
                 }`}
                 onClick={() => onSelectProject(project.id)}
               >
-                <div className="flex items-start space-x-3 text-left flex-1">
-                  {selectedProject === project.id ? (
-                    <FolderOpen className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                  ) : (
-                    <Folder className="w-4 h-4 mt-0.5 flex-shrink-0" />
-                  )}
-                  <div className="flex-1 min-w-0">
-                    <div className="font-medium text-sm truncate">
-                      {project.name}
-                    </div>
-                    <div
-                      className={`text-xs mt-1 line-clamp-2 ${
-                        selectedProject === project.id
-                          ? "text-gray-300"
-                          : "text-gray-500"
-                      }`}
-                    >
-                      {project.description}
-                    </div>
+                {selectedProject === project.id ? (
+                  <FolderOpen className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                ) : (
+                  <Folder className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                )}
+                <div className="flex-1 min-w-0">
+                  <div className="font-medium text-sm truncate">
+                    {project.name}
+                  </div>
+                  <div
+                    className={`text-xs mt-1 line-clamp-2 ${
+                      selectedProject === project.id
+                        ? "text-gray-300"
+                        : "text-gray-500"
+                    }`}
+                  >
+                    {project.description}
                   </div>
                 </div>
               </Button>
 
               {canManageProjects && (
-                <div className="absolute top-2 right-2 lg:left-52">
+                <div className="flex px-2 absolute right-2 lg:left-48 top-2 h-full opacity-0 group-hover:opacity-100 transition-opacity">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button
                         variant="ghost"
                         size="sm"
-                        className={`h-6 w-6 p-0 opacity-0 group-hover:opacity-100 transition-opacity ${
+                        className={`h-6 w-6 p-0 opacity-100 transition-opacity ${
                           selectedProject === project.id
                             ? "text-white hover:bg-gray-700"
                             : "text-gray-500 hover:bg-gray-100"
                         }`}
                         onClick={(e) => e.stopPropagation()}
                       >
-                        <MoreVertical className="w-3 h-3" />
+                        <MoreVertical className="w-4 h-4" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">

@@ -205,6 +205,7 @@ export default function Home() {
     updates: Partial<Project>
   ) => {
     try {
+        console.log("Updating Project ID:", projectId, "with updates:", updates);
       const token = localStorage.getItem("accessToken");
       if (!token) {
         toast.error("No access token found");
@@ -349,7 +350,6 @@ export default function Home() {
           page: 1,
           limit: 100,
         });
-        console.log("Fetched Users:", users.data.users);
         setUsers(users?.data?.users);
       } catch (error) {
         console.error("Failed to fetch users:", error);
@@ -401,10 +401,10 @@ export default function Home() {
     fetchTasks();
   }, [selectedProject]);
 
-  useEffect(() => {
-    console.log("Tasks:", tasks);
-    console.log("FilteredTasks:", filteredTasks);
-  }, [tasks, filteredTasks]);
+//   useEffect(() => {
+//     console.log("Tasks:", tasks);
+//     console.log("FilteredTasks:", filteredTasks);
+//   }, [tasks, filteredTasks]);
 
   return (
     <MainLayout>
@@ -503,40 +503,44 @@ export default function Home() {
                     tasks={filteredTasks}
                   />
 
-                  <DndContext
-                    sensors={sensors}
-                    onDragStart={handleDragStart}
-                    onDragMove={handleDragMove}
-                    onDragEnd={handleDragEnd}
-                    onDragCancel={() => {
-                      setActiveId(null);
-                      setDragging(false);
-                    }}
-                    collisionDetection={closestCorners}
-                  >
-                    <KanbanBoard
-                      tasks={filteredTasks}
-                      dragging={dragging}
-                      users={users}
-                      onEditTask={setEditingTask}
-                      onDeleteTask={(task) =>
-                        setDeletingItem({ type: "task", item: task })
-                      }
-                      activeId={activeId}
-                      userRole={currentUser?.role}
-                      currentUserId={currentUser?.id}
-                    />
-                  </DndContext>
+                  {tasks && (
+                    <DndContext
+                      sensors={sensors}
+                      onDragStart={handleDragStart}
+                      onDragMove={handleDragMove}
+                      onDragEnd={handleDragEnd}
+                      onDragCancel={() => {
+                        setActiveId(null);
+                        setDragging(false);
+                      }}
+                      collisionDetection={closestCorners}
+                    >
+                      <KanbanBoard
+                        tasks={filteredTasks}
+                        dragging={dragging}
+                        users={users}
+                        onEditTask={setEditingTask}
+                        onDeleteTask={(task?) =>
+                          setDeletingItem({ type: "task", item: task })
+                        }
+                        activeId={activeId}
+                        userRole={currentUser?.role}
+                        currentUserId={currentUser?.id}
+                      />
+                    </DndContext>
+                  )}
                 </>
               ) : (
                 <div className="text-center py-12">
                   <div className="max-w-md mx-auto">
                     <Layout className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                     <h3 className="text-lg font-medium text-gray-900 mb-2">
-                      {projects ? 'Select a Project' : 'Create a new Project'}
+                      {projects ? "Select a Project" : "Create a new Project"}
                     </h3>
                     <p className="text-gray-500 mb-6">
-                     {projects ? ' Choose a project from the sidebar to view and manage its tasks' : 'Click on New Project on top right to create one.'}
+                      {projects
+                        ? " Choose a project from the sidebar to view and manage its tasks"
+                        : "Click on New Project on top right to create one."}
                     </p>
                     {canCreateProject && (
                       <Button

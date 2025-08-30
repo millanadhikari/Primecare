@@ -44,18 +44,18 @@ function KanbanColumn({
           <h3 className="font-semibold text-gray-900 flex items-center justify-between">
             {title}
             <span className="text-sm font-normal text-gray-500 bg-white px-2 py-1 rounded">
-              {tasks.length}
+              {tasks?.length}
             </span>
           </h3>
         </div>
 
         <div ref={setNodeRef} className="p-4 min-h-96">
           <SortableContext
-            items={tasks.map((t) => t.id)}
+            items={tasks?.map((t) => t.id)}
             strategy={verticalListSortingStrategy}
           >
             <div className="space-y-3">
-              {tasks.map((task) => (
+              {tasks?.map((task) => (
                 <TaskCard
                   key={task.id}
                   task={task}
@@ -105,12 +105,12 @@ export function KanbanBoard({
     []
   );
   const activeTask = activeId
-    ? tasks.find((task) => task.id === activeId)
+    ? tasks?.find((task) => task.id === activeId)
     : null;
 
   const tasksByStatus = useMemo(() => {
     return columns.reduce((acc, column) => {
-      acc[column.id] = tasks.filter((task) => task.status === column.id);
+      acc[column.id] = tasks?.filter((task) => task.status === column.id);
       return acc;
     }, {} as Record<TaskStatus, Task[]>);
   }, [tasks, columns]);
