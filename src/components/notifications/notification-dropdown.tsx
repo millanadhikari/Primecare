@@ -30,6 +30,8 @@ import {
   XCircle,
   Clock,
   MoreHorizontal,
+  FileChartColumn,
+  ListTodo,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useNotifications } from "./notification-provider";
@@ -77,6 +79,10 @@ export function NotificationDropdown() {
         return <MessageSquare className="h-4 w-4 text-green-500" />;
       case "client_assignment":
         return <Users className="h-4 w-4 text-purple-500" />;
+      case "project_assignment":
+        return <FileChartColumn  className="h-4 w-4 text-purple-500" />;
+      case "task_assignment":
+        return <ListTodo  className="h-4 w-4 text-purple-500" />;
       case "system":
         return <Settings className="h-4 w-4 text-gray-500" />;
       case "success":
@@ -141,12 +147,12 @@ export function NotificationDropdown() {
   return (
     <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon" className="relative">
+        <Button variant="outline" size="icon" className="relative border-none">
           <Bell className="h-6 w-6" />
           {unreadCount > 0 && (
             <Badge
               variant="destructive"
-              className="absolute -right-1 -top-1 h-4 w-4 rounded-full p-0 text-xs flex items-center justify-center"
+              className="absolute -right-1 -top-1 h-3.5 w-3.5 rounded-full p-0 text-xs flex items-center justify-center"
             >
               {unreadCount > 99 ? "99+" : unreadCount}
             </Badge>

@@ -1,7 +1,7 @@
 // lib/api.ts
 
-const production =  'https://primebackend.onrender.com/api/client'
-// // 
+const production = "https://primebackend.onrender.com/api/client";
+// //
 // const production = "http://localhost:3000/api/client";
 
 export async function getClients(
@@ -49,10 +49,19 @@ export async function deleteClient(token: string, id: string) {
       "Content-Type": "application/json",
     },
   });
-
   if (!res.ok) {
-    const errorData = await res.json();
-    throw new Error(errorData.message || "Failed to delete client");
+    let errorMessage = "Failed to delete client";
+
+    const contentType = res.headers.get("content-type") || "";
+    if (contentType.includes("application/json")) {
+      const errorData = await res.json();
+      errorMessage = errorData.message || errorMessage;
+    } else {
+      const errorText = await res.text();
+      errorMessage = errorText || errorMessage;
+    }
+
+    throw new Error(errorMessage);
   }
 
   return true;

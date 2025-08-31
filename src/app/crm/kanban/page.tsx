@@ -134,7 +134,6 @@ export default function Home() {
     }
   };
   const VALID_STATUSES = ["TODO", "IN_PROGRESS", "REVIEW", "DONE"];
-
   const handleDragEnd = async (event: DragEndEvent) => {
     const { active, over } = event;
 
@@ -143,34 +142,41 @@ export default function Home() {
       setDragging(false);
       return;
     }
-    const overId = typeof over.id === "string" ? over.id : String(over.id);
-    // Simple check:
+
+    let overId = typeof over.id === "string" ? over.id : String(over.id);
+
+    // If dropped on a column (valid status), keep it
+    // Otherwise, if dropped on a task/card, find that task's status
     if (!VALID_STATUSES.includes(overId)) {
-      // Dropped on a task card or invalid target, ignore status update
-      setActiveId(null);
-      setDragging(false);
-      return;
+      const overTask = tasks.find((task) => task.id === overId);
+      if (overTask) {
+        overId = overTask.status;
+      } else {
+        // Invalid drop target, abort
+        setActiveId(null);
+        setDragging(false);
+        return;
+      }
     }
 
-    const taskId = active.id.toString();
-    const newStatus = over.id as TaskStatus;
 
-    console.log("Dragged task id:", active.id);
-    console.log("Drop target id:", over?.id);
+    const taskId = active.id.toString();
+    const newStatus = overId as TaskStatus;
+
     try {
       const token = localStorage.getItem("accessToken");
       if (!token) {
         toast.error("No access token found");
         return;
       }
-      console.log("newStatus:", newStatus);
-      // Call your async API function to update the task status in backend
+
+      // Call API to update task status
       await updateTask(taskId, { status: newStatus }, token);
 
-      // Update frontend state only if the API call succeeds
+      // Update frontend state immutably
       setTasks((prev) =>
         prev.map((task) =>
-          task.id === taskId
+          String(task.id) === taskId
             ? { ...task, status: newStatus, updatedAt: new Date() }
             : task
         )
@@ -205,7 +211,7 @@ export default function Home() {
     updates: Partial<Project>
   ) => {
     try {
-        console.log("Updating Project ID:", projectId, "with updates:", updates);
+      console.log("Updating Project ID:", projectId, "with updates:", updates);
       const token = localStorage.getItem("accessToken");
       if (!token) {
         toast.error("No access token found");
@@ -401,10 +407,10 @@ export default function Home() {
     fetchTasks();
   }, [selectedProject]);
 
-//   useEffect(() => {
-//     console.log("Tasks:", tasks);
-//     console.log("FilteredTasks:", filteredTasks);
-//   }, [tasks, filteredTasks]);
+  //   useEffect(() => {
+  //     console.log("Tasks:", tasks);
+  //     console.log("FilteredTasks:", filteredTasks);
+  //   }, [tasks, filteredTasks]);
 
   return (
     <MainLayout>
@@ -469,7 +475,7 @@ export default function Home() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex flex-col lg:flex-row gap-6">
-            {projects && (
+            {projects?.length > 0 && (
               <div className="lg:w-64 flex-shrink-0">
                 <ProjectList
                   projects={projects}
@@ -535,10 +541,12 @@ export default function Home() {
                   <div className="max-w-md mx-auto">
                     <Layout className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                     <h3 className="text-lg font-medium text-gray-900 mb-2">
-                      {projects ? "Select a Project" : "Create a new Project"}
+                      {projects?.length > 0
+                        ? "Select a Project"
+                        : "Create a new Project"}
                     </h3>
                     <p className="text-gray-500 mb-6">
-                      {projects
+                      {projects?.length > 0
                         ? " Choose a project from the sidebar to view and manage its tasks"
                         : "Click on New Project on top right to create one."}
                     </p>

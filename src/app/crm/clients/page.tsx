@@ -292,6 +292,19 @@ export default function ClientsPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
+                  {currentClients &&
+                    currentClients.length === 0 &&
+                    !loading && (
+                      <TableRow>
+                        <TableCell
+                          colSpan={7}
+                          className="text-center py-10 text-md text-gray-400"
+                        >
+                          No Clients found.
+                        </TableCell>
+                      </TableRow>
+                    )}
+
                   {loading
                     ? // Render 5 skeleton rows
                       Array.from({ length: 5 }).map((_, i) => (
