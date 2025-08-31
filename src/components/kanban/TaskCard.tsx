@@ -96,10 +96,10 @@ export function TaskCard({
     >
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1">
-          <h4 className="font-medium text-gray-900 text-sm leading-tight">
+          <h4 className="font-medium text-gray-900 dark:text-white text-sm leading-tight">
             {task.title}
           </h4>
-          <p className="text-xs text-gray-600 mt-1">
+          <p className="text-xs text-gray-600 dark:text-gray-500  mt-1">
             Client: {task.clientName}
           </p>
         </div>
@@ -112,7 +112,7 @@ export function TaskCard({
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="h-6 w-6 p-0 hover:bg-gray-100 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="h-6 w-6 p-0 hover:bg-gray-100 dark:hover:bg-gray-700 opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     <MoreVertical className="w-3 h-3" />
                   </Button>
@@ -142,9 +142,9 @@ export function TaskCard({
             <div
               {...attributes}
               {...listeners}
-              className="cursor-grab hover:bg-gray-100 p-1 rounded"
+              className="cursor-grab hover:bg-gray-100  dark:hover:bg-gray-700 p-1 rounded"
             >
-              <GripVertical className="w-3 h-3 text-gray-400" />
+              <GripVertical className="w-3 h-3 text-gray-400 dark:text-gray-500" />
             </div>
           )}
         </div>
@@ -164,7 +164,7 @@ export function TaskCard({
           )}
         </div>
 
-        <div className="flex items-center justify-between text-xs text-gray-500">
+        <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
           <div className="flex items-center">
             <UserIcon className="w-3 h-3 mr-1" />
             <span className="truncate">{assignedUser?.firstName}</span>
@@ -181,7 +181,7 @@ export function TaskCard({
         </div>
 
         {task.description && (
-          <p className="text-xs text-gray-600 line-clamp-2 mt-2">
+          <p className="text-xs text-gray-600 line-clamp-2 mt-2 dark:text-gray-500">
             {task.description}
           </p>
         )}

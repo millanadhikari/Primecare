@@ -307,6 +307,18 @@ export default function BlogsPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
+                  {currentBlogs &&
+                    currentBlogs.length === 0 &&
+                    !loading && (
+                      <TableRow>
+                        <TableCell
+                          colSpan={7}
+                          className="text-center py-10 text-md text-gray-400"
+                        >
+                          No Blogs found.
+                        </TableCell>
+                      </TableRow>
+                    )}
                   {loading
                     ? // Render 5 skeleton rows
                       Array.from({ length: 5 }).map((_, i) => (

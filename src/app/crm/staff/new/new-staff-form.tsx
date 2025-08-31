@@ -85,7 +85,7 @@ export function NewStaffForm() {
   };
 
   const handleCancel = () => {
-    router.push("/staff");
+    router.push("/crm/staff");
   };
 
   const generateRandomPassword = () => {

@@ -52,55 +52,6 @@ import { cn } from "@/lib/utils";
 import { deleteStaff, getStaffs } from "@/app/lib/staffApi";
 import { SkeletonRow } from "@/components/layout/SkeletonRow";
 
-// Sample staff data
-const initialStaff = [
-  {
-    id: "1",
-    name: "Dr. Rebecca Chen",
-    gender: "Female",
-    role: "Medical Director",
-    email: "rebecca.chen@medicare.com",
-    mobile: "+1 (555) 123-4567",
-    employmentType: "Full-time",
-    jobTitle: "Medical Director",
-    joinedDate: "Jan 15, 2024",
-    lastLogin: "10 mins ago",
-    onboardingStatus: "Completed",
-    username: "rebecca.chen",
-    hasAccount: true,
-  },
-  {
-    id: "2",
-    name: "Dr. Mark Johnson",
-    gender: "Male",
-    role: "Physician",
-    email: "mark.johnson@medicare.com",
-    mobile: "+1 (555) 234-5678",
-    employmentType: "Full-time",
-    jobTitle: "Senior Physician",
-    joinedDate: "Mar 1, 2024",
-    lastLogin: "2 hours ago",
-    onboardingStatus: "Completed",
-    username: "mark.johnson",
-    hasAccount: true,
-  },
-  {
-    id: "3",
-    name: "Sarah Williams",
-    gender: "Female",
-    role: "Nurse",
-    email: "sarah.williams@medicare.com",
-    mobile: "+1 (555) 345-6789",
-    employmentType: "Part-time",
-    jobTitle: "Registered Nurse",
-    joinedDate: "Mar 15, 2024",
-    lastLogin: "1 day ago",
-    onboardingStatus: "In Progress",
-    username: "",
-    hasAccount: false,
-  },
-];
-
 export default function StaffDirectoryPage() {
   const router = useRouter();
   const [staff, setStaff] = useState(null);
@@ -304,6 +255,16 @@ export default function StaffDirectoryPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
+                {currentStaffs && currentStaffs?.length === 0 && !loading && (
+                  <TableRow>
+                    <TableCell
+                      colSpan={7}
+                      className="text-center py-10 text-md text-gray-400"
+                    >
+                      No Clients found.
+                    </TableCell>
+                  </TableRow>
+                )}
                 {loading
                   ? // Render 5 skeleton rows
                     Array.from({ length: 5 }).map((_, i) => (

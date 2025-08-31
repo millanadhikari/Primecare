@@ -159,7 +159,6 @@ export default function Home() {
       }
     }
 
-
     const taskId = active.id.toString();
     const newStatus = overId as TaskStatus;
 
@@ -414,12 +413,12 @@ export default function Home() {
 
   return (
     <MainLayout>
-      <div className="min-h-screen bg-white">
-        <div className="border-b border-gray-200">
+      <div className="min-h-screen bg-white dark:bg-background/80">
+        <div className="border-b border-gray-200 dark:border-gray-700">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex items-center justify-between py-4">
               <div className="flex items-center space-x-4">
-                <h1 className="text-2xl font-bold text-gray-900">
+                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
                   Project Management
                 </h1>
                 {/* <span className="px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800 rounded">
@@ -451,7 +450,7 @@ export default function Home() {
                 {canCreateProject && (
                   <Button
                     onClick={() => setShowCreateProject(true)}
-                    className="bg-black text-white hover:bg-gray-800"
+                    className="bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200"
                   >
                     <Plus className="w-4 h-4 mr-2" />
                     New Project
@@ -462,7 +461,7 @@ export default function Home() {
                   <Button
                     onClick={() => setShowCreateTask(true)}
                     variant="outline"
-                    className="border-black text-black hover:bg-gray-50"
+                    className="border-black dark:border-white text-black dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800"
                   >
                     <Plus className="w-4 h-4 mr-2" />
                     New Task
@@ -494,10 +493,11 @@ export default function Home() {
               {selectedProjectData ? (
                 <>
                   <div className="mb-6">
-                    <h2 className="text-xl font-semibold text-gray-900 mb-2">
+                    <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+                      {" "}
                       {selectedProjectData.name}
                     </h2>
-                    <p className="text-gray-600">
+                    <p className="text-gray-600 dark:text-gray-300">
                       {selectedProjectData.description}
                     </p>
                   </div>
@@ -540,12 +540,12 @@ export default function Home() {
                 <div className="text-center py-12">
                   <div className="max-w-md mx-auto">
                     <Layout className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium text-gray-900 mb-2">
+                    <h3 className="text-lg font-medium text-gray-900 dark:text-white  mb-2">
                       {projects?.length > 0
                         ? "Select a Project"
                         : "Create a new Project"}
                     </h3>
-                    <p className="text-gray-500 mb-6">
+                    <p className="text-gray-500 dark:text-gray-400  mb-6">
                       {projects?.length > 0
                         ? " Choose a project from the sidebar to view and manage its tasks"
                         : "Click on New Project on top right to create one."}
@@ -553,7 +553,7 @@ export default function Home() {
                     {canCreateProject && (
                       <Button
                         onClick={() => setShowCreateProject(true)}
-                        className="bg-black text-white hover:bg-gray-800"
+                        className="bg-black dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200"
                       >
                         <Plus className="w-4 h-4 mr-2" />
                         Create Your First Project
@@ -623,7 +623,7 @@ export default function Home() {
             }
           />
         )}
-        <Toaster position="top-right" />
+        {/* <Toaster position="top-right" /> */}
       </div>
     </MainLayout>
   );

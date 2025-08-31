@@ -168,7 +168,7 @@ export default function MessagesPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [recordsPerPage, setRecordsPerPage] = useState(10);
   const [selectedMessages, setSelectedMessages] = useState<string[]>([]);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
   const handleMarkAsRead = async (id: string) => {
     try {
@@ -402,7 +402,7 @@ export default function MessagesPage() {
 
   const fetchMessages = async () => {
     const token = localStorage.getItem("token");
-    setLoading(true)
+    setLoading(true);
     // if (!token) {
     //   toast.error("You must be logged in to view messages");
     //   return;
@@ -417,7 +417,7 @@ export default function MessagesPage() {
       });
       console.log("Fetched messages:", response);
       setMessages(response?.data?.messages);
-      setLoading(false)
+      setLoading(false);
       console.log("Messages set:", messages);
     } catch (error) {
       console.error("Failed to fetch messages:", error);
@@ -583,13 +583,24 @@ export default function MessagesPage() {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
+                  {currentMessages &&
+                    currentMessages?.length === 0 &&
+                    !loading && (
+                      <TableRow>
+                        <TableCell
+                          colSpan={7}
+                          className="text-center py-10 text-md text-gray-400"
+                        >
+                          No Messages found.
+                        </TableCell>
+                      </TableRow>
+                    )}
                   {loading
                     ? // Render 5 skeleton rows
                       Array.from({ length: 5 }).map((_, i) => (
                         <SkeletonRow key={i} />
                       ))
-                    :
-                     currentMessages?.map((message) => (
+                    : currentMessages?.map((message) => (
                         <TableRow
                           key={message.id}
                           className={`cursor-pointer transition-colors hover:bg-accent ${
